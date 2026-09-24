@@ -1,0 +1,228 @@
+[
+  {
+    "type": "mc",
+    "q": "Segundo o material, o que caracteriza CI (integração contínua) além de simplesmente ter um arquivo YAML de workflow?",
+    "options": [
+      "Ter um arquivo YAML já é suficiente para caracterizar CI, independentemente do comportamento da equipe",
+      "A equipe precisa integrar com frequência, manter a main executável, e não contornar falhas com reruns sucessivos ou checks opcionais",
+      "CI exige obrigatoriamente o uso do GitHub Actions especificamente, nenhuma outra ferramenta serve",
+      "CI só é válido se todos os testes forem escritos em Java"
+    ],
+    "correct": 1,
+    "explanation": "Ter um arquivo YAML não produz CI se a equipe integra raramente, aceita pipeline vermelho ou ignora o check para fazer merge — CI é sobre comportamento, não sobre ferramenta."
+  },
+  {
+    "type": "mc",
+    "q": "No modelo do GitHub Actions, qual é a diferença entre \"Job\" e \"Step\"?",
+    "options": [
+      "Job e Step são sinônimos no GitHub Actions",
+      "Job é um conjunto de passos em um runner (paralelos por padrão); Step é uma action reutilizável ou comando de shell dentro de um job",
+      "Step sempre roda antes de qualquer Job ser iniciado",
+      "Job só pode conter um único Step, nunca mais de um"
+    ],
+    "correct": 1,
+    "explanation": "Um workflow tem eventos, jobs (que rodam em runners, paralelos por padrão) e steps (as ações ou comandos dentro de cada job)."
+  },
+  {
+    "type": "mc",
+    "q": "Por que jobs não compartilham filesystem entre si, e o que isso implica na prática?",
+    "options": [
+      "Isso é uma limitação que deve ser contornada com scripts externos de sincronização",
+      "É assim por design; use artifacts para preservar evidências entre jobs e `needs` para declarar dependência explícita entre eles",
+      "Isso significa que um workflow só pode ter um job por vez",
+      "Isso impede completamente o uso de testes de integração no pipeline"
+    ],
+    "correct": 1,
+    "explanation": "Artifacts preservam arquivos (como relatórios de teste) após um job terminar; `needs` declara explicitamente quando um job depende do resultado de outro."
+  },
+  {
+    "type": "mc",
+    "q": "No workflow mínimo apresentado, por que o comando final usado é `./mvnw -B verify` e não apenas `mvn test`?",
+    "options": [
+      "Porque `test` não existe no Maven",
+      "Porque `./mvnw` fixa a versão do Maven do projeto, `-B` roda em modo batch apropriado à automação, e `verify` avança o ciclo de vida do Maven, permitindo crescer o gate (testes de integração, cobertura) sem trocar o contrato principal",
+      "Porque `verify` executa os testes mais rápido que `test`",
+      "Porque `mvn test` requer conexão com a internet e `verify` não"
+    ],
+    "correct": 1,
+    "explanation": "test executa apenas a fase de testes unitários; verify avança o ciclo de vida do Maven e permite que o gate cresça nas próximas aulas (cobertura, testes de integração) sem trocar o comando principal."
+  },
+  {
+    "type": "mc",
+    "q": "Qual prática é explicitamente proibida no job que decide a qualidade, segundo o material?",
+    "options": [
+      "Usar cache de dependências Maven",
+      "Usar `-DskipTests` no comando que decide a qualidade",
+      "Usar o mesmo comando localmente e na CI",
+      "Fixar a versão do Maven usando o wrapper `./mvnw`"
+    ],
+    "correct": 1,
+    "explanation": "O mesmo comando deve estar no README e funcionar localmente — pular testes no job que decide a qualidade anularia o propósito do gate."
+  },
+  {
+    "type": "mc",
+    "q": "O que a diretiva `concurrency` com `cancel-in-progress: true` faz em um workflow do GitHub Actions?",
+    "options": [
+      "Executa todos os jobs em paralelo, independentemente da referência (branch/PR)",
+      "Cancela execuções antigas da mesma referência, liberando runners mais rapidamente",
+      "Impede que qualquer workflow seja cancelado manualmente",
+      "Aumenta o tempo limite (timeout) de todos os jobs automaticamente"
+    ],
+    "correct": 1,
+    "explanation": "Quando um novo push chega para a mesma referência (ex.: mesmo PR), a execução anterior em andamento é cancelada — evitando gastar runners com um resultado que já ficou obsoleto."
+  },
+  {
+    "type": "mc",
+    "q": "Quais práticas o material classifica como formas de \"mascarar\" problemas, em vez de acelerar o CI de forma legítima?",
+    "options": [
+      "Testes determinísticos, cache de dependências, jobs independentes",
+      "`continue-on-error`, retry indiscriminado, exclusão silenciosa e workspace persistente",
+      "Mudanças menores e branches curtas",
+      "Publicação de relatórios como artifact"
+    ],
+    "correct": 1,
+    "explanation": "Essas práticas escondem falhas reais em vez de resolvê-las — o pipeline aparenta estar saudável, mas está apenas ignorando sinais de problema."
+  },
+  {
+    "type": "mc",
+    "q": "No passo de publicação de relatórios de teste, por que o step usa `if: always()`?",
+    "options": [
+      "Para garantir que o step rode mesmo após uma falha nos testes, preservando o resultado daquela execução para diagnóstico",
+      "Para forçar a execução do step em paralelo com os testes",
+      "Porque é a sintaxe obrigatória de qualquer step do GitHub Actions",
+      "Para ignorar erros de configuração do YAML"
+    ],
+    "correct": 0,
+    "explanation": "Sem `if: always()`, o step de publicação seria pulado justamente no cenário mais importante — quando os testes falharam e a evidência é mais necessária para diagnóstico."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a recomendação de permissões mínimas para um workflow do GitHub Actions?",
+    "options": [
+      "Conceder `write` a todo o workflow por padrão, para simplificar a configuração",
+      "Começar com `contents: read` e conceder escrita apenas ao job específico que realmente precisa dela",
+      "Nunca declarar `permissions`, deixando o padrão do GitHub decidir",
+      "Sempre usar `admin` para evitar problemas de permissão durante o desenvolvimento"
+    ],
+    "correct": 1,
+    "explanation": "Permissões mínimas reduzem a superfície de risco: um job que só executa testes não precisa de permissão de escrita em nada."
+  },
+  {
+    "type": "mc",
+    "q": "Por que o evento `pull_request_target` exige atenção especial de segurança?",
+    "options": [
+      "Porque ele nunca funciona corretamente em repositórios públicos",
+      "Porque ele roda no contexto da base (não do fork) e pode ter acesso privilegiado — não se deve fazer checkout e execução ingênua de código não confiável nesse contexto",
+      "Porque ele é mais lento que o evento `pull_request` comum",
+      "Porque ele não permite o uso de cache de dependências"
+    ],
+    "correct": 1,
+    "explanation": "Código de um fork externo, se executado nesse contexto privilegiado sem cuidado, pode tentar exfiltrar segredos ou modificar o repositório de forma indevida."
+  },
+  {
+    "type": "mc",
+    "q": "Depois de configurar branch protection exigindo o check `qualidade / test`, qual prática o material recomenda evitar como rotina?",
+    "options": [
+      "Exigir revisão por par além do check obrigatório",
+      "Permitir merge administrativo como rotina — exceções devem ser auditáveis, não corriqueiras",
+      "Exigir que a branch esteja atualizada com a base antes do merge",
+      "Confirmar o nome estável do check antes de configurar a proteção"
+    ],
+    "correct": 1,
+    "explanation": "Se o merge administrativo vira rotina, o gate deixa de ser controle preventivo e volta a ser apenas um relatório opcional — o pipeline perde seu propósito."
+  },
+  {
+    "type": "mc",
+    "q": "Um teste passa localmente, mas falha consistentemente na CI. Segundo a tabela de diagnóstico, o que deve ser comparado primeiro?",
+    "options": [
+      "Apenas a versão do sistema operacional do desenvolvedor",
+      "Versão do Java, comando executado, timezone, locale, filesystem e estado implícito entre os dois ambientes",
+      "O número de commits realizados naquele dia",
+      "O tamanho do arquivo de log gerado"
+    ],
+    "correct": 1,
+    "explanation": "Diferenças de ambiente (Java, timezone, locale, filesystem, estado implícito) são as causas mais comuns de discrepância entre execução local e CI."
+  },
+  {
+    "type": "mc",
+    "q": "Um teste falha de forma intermitente (às vezes passa, às vezes não), sem mudança de código. O que investigar primeiro, segundo o diagnóstico do material?",
+    "options": [
+      "Apenas a versão do compilador utilizada",
+      "Concorrência, relógio, ordem de execução, portas e dependência externa",
+      "O tamanho do repositório Git",
+      "A quantidade de branches abertas no repositório"
+    ],
+    "correct": 1,
+    "explanation": "Testes intermitentes (flaky) geralmente indicam dependência de tempo real, ordem não determinística ou recursos compartilhados (portas, estado externo)."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é o papel de um rerun (nova execução do mesmo commit) quando um teste falha de forma inesperada?",
+    "options": [
+      "É a correção definitiva e deve desbloquear o merge automaticamente",
+      "É um experimento para confirmar flakiness — não é correção nem deve desbloquear merge automaticamente",
+      "Deve ser evitado completamente em qualquer circunstância",
+      "Substitui a necessidade de investigar a causa raiz da falha"
+    ],
+    "correct": 1,
+    "explanation": "Um teste que passa após rerun sem nenhuma mudança de código é um sinal de alerta (flakiness), não uma confirmação de que está tudo bem — precisa de investigação, não de silêncio."
+  },
+  {
+    "type": "mc",
+    "q": "No modelo do GitHub Actions, o que é um \"Evento\", segundo a tabela do material?",
+    "options": [
+      "O processo versionado em `.github/workflows/*.yml`",
+      "O disparo que inicia o workflow, como `pull_request` ou `push` em `main`",
+      "A máquina limpa que executa o job",
+      "O arquivo preservado após o job, como um relatório de teste"
+    ],
+    "correct": 1,
+    "explanation": "Evento é o gatilho (`pull_request`, `push`); Workflow é o processo versionado; Runner é a máquina; Artifact é o arquivo preservado — cada termo tem uma responsabilidade específica no modelo."
+  },
+  {
+    "type": "mc",
+    "q": "Sobre o cache de dependências Maven configurado junto ao `setup-java`, o que o material afirma?",
+    "options": [
+      "Ele elimina completamente a necessidade de baixar qualquer dependência, para sempre",
+      "A chave do cache considera os arquivos de dependência do projeto (como o `pom.xml`), e o cache não deve reaproveitar saída compilada de forma a esconder problemas",
+      "O cache deve ser desabilitado sempre que o projeto usa Java 21",
+      "O cache funciona apenas em repositórios privados"
+    ],
+    "correct": 1,
+    "explanation": "Cache acelera o download de dependências, mas precisa ser usado com cuidado para não mascarar problemas reaproveitando artefatos compilados indevidamente."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a tabela de diagnóstico operacional, o que deve ser investigado quando um workflow simplesmente \"não dispara\"?",
+    "options": [
+      "Apenas a quantidade de jobs configurados",
+      "Validar o YAML, o evento configurado, a branch e os filtros de paths",
+      "O tempo de execução dos testes unitários",
+      "A versão do Java usada no projeto"
+    ],
+    "correct": 1,
+    "explanation": "Um workflow que não dispara geralmente tem um problema de configuração — sintaxe do YAML, evento errado, branch não coberta pelo filtro, ou filtro de paths bloqueando o disparo."
+  },
+  {
+    "type": "mc",
+    "q": "Quando o artifact publicado por um workflow vem vazio, o que a tabela de diagnóstico recomenda verificar primeiro?",
+    "options": [
+      "Se o repositório está marcado como privado",
+      "Se a fase do Maven, os caminhos configurados e o `if: always()` estão corretos",
+      "Se a equipe tem permissão de administrador no repositório",
+      "Se o token de autenticação expirou"
+    ],
+    "correct": 1,
+    "explanation": "Um artifact vazio geralmente indica que os relatórios não foram gerados na fase certa do Maven, que os caminhos apontados no step estão errados, ou que o step não roda em caso de falha por falta de `if: always()`."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Por que `verify` é um ponto de extensão melhor que `test` para o comando usado no gate de CI?",
+    "expected": "Porque o ciclo de vida do Maven é sequencial e cumulativo: `test` executa apenas a fase de testes unitários, enquanto `verify` já avança o ciclo de vida e permite acrescentar, nas próximas etapas do curso, verificações adicionais como testes de integração e checagem de metas de cobertura (JaCoCo) — sem precisar trocar o comando principal usado no workflow, no README e localmente. Usar `verify` desde o início evita um retrabalho de configuração quando o gate crescer, e mantém o mesmo contrato entre ambiente local e CI."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Qual é o risco de dar permissão de escrita a um workflow inteiro, em vez de apenas ao job específico que precisa dela?",
+    "expected": "Se todo o workflow recebe permissão de escrita, qualquer step — inclusive um step que executa uma action de terceiros ou processa uma entrada não totalmente confiável (como conteúdo de um PR externo) — herda esse poder. Isso amplia a superfície de ataque: uma dependência comprometida ou uma injeção via input do PR poderia, em tese, escrever no repositório, publicar releases indevidos ou vazar segredos com privilégio de escrita. O princípio de permissões mínimas (começar com `contents: read` e conceder escrita apenas ao job que realmente precisa) limita o estrago possível caso algo dê errado em qualquer parte do pipeline."
+  }
+]

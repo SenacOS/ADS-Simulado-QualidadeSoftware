@@ -1,0 +1,228 @@
+[
+  {
+    "type": "mc",
+    "q": "No vocabulário causal do material, qual é a diferença entre \"defeito\" e \"incidente\"?",
+    "options": [
+      "Defeito é o problema no artefato (ex.: comparação sem normalização); incidente é o evento percebido e investigado (ex.: usuário relata login inconsistente)",
+      "Defeito e incidente são sinônimos, usados apenas em contextos diferentes",
+      "Defeito só existe em código; incidente só existe em infraestrutura",
+      "Incidente é sempre mais grave do que defeito, por definição"
+    ],
+    "correct": 0,
+    "explanation": "Um defeito pode permanecer latente; um incidente é o evento que foi percebido e passou a ser investigado — diferenciar os termos evita \"corrigir\" o relato sem investigar o mecanismo de fato."
+  },
+  {
+    "type": "mc",
+    "q": "Ao escrever um relato de defeito reproduzível, qual das seguintes práticas é explicitamente proibida pelo material?",
+    "options": [
+      "Incluir o ambiente, versão e commit em que o problema foi observado",
+      "Anexar senha, token, credencial, matrícula ou dado pessoal real — mesmo que isso facilitasse a reprodução",
+      "Numerar os passos mínimos necessários para reproduzir o problema",
+      "Registrar o resultado obtido lado a lado com o resultado esperado"
+    ],
+    "correct": 1,
+    "explanation": "Proteção de dados é um requisito do relato: use contas e payloads sintéticos, remova segredos de logs, e nunca anexe dados reais sensíveis."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo completo do material (\"cadastro aceita e-mail duplicado com caixa e espaços diferentes\"), por que o domínio `.invalid` foi usado no e-mail de exemplo?",
+    "options": [
+      "Porque é o domínio padrão de todos os ambientes de homologação",
+      "Porque o domínio `.invalid` é reservado para exemplos e evita confundir o material com dados reais",
+      "Porque `.invalid` força o sistema a rejeitar automaticamente o cadastro",
+      "Porque é uma exigência da LGPD para qualquer exemplo de e-mail em documentação"
+    ],
+    "correct": 1,
+    "explanation": "Usar domínios reservados para exemplo é uma prática de proteção de dados que evita que material didático seja confundido com dados reais de produção."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a diferença fundamental entre severidade e prioridade de um defeito?",
+    "options": [
+      "Severidade é decisão de negócio; prioridade mede dano técnico",
+      "Severidade mede dano (confidencialidade, integridade, disponibilidade, fluxo bloqueado, alcance); prioridade é uma decisão de negócio/planejamento (urgência, compromisso, exposição, contorno, custo de atraso)",
+      "Severidade e prioridade são a mesma coisa, apenas com nomes diferentes em ferramentas distintas",
+      "Prioridade só pode ser definida pelo time de desenvolvimento, nunca pelo produto"
+    ],
+    "correct": 1,
+    "explanation": "Essa distinção evita que rótulos virem disputa de opinião: severidade é técnica (o quanto dói), prioridade é temporal/estratégica (quando resolver)."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a matriz severidade × prioridade do material, qual é um exemplo de \"alta severidade, baixa prioridade\"?",
+    "options": [
+      "Grafia errada na campanha que começa hoje",
+      "Falha crítica em um recurso que está desligado e ainda não foi exposto aos usuários",
+      "Desalinhamento visual em uma tela administrativa rara",
+      "Conteúdo premium liberado indevidamente para o plano free"
+    ],
+    "correct": 1,
+    "explanation": "O dano técnico é alto (severidade), mas como o recurso não está exposto, não há urgência de negócio imediata (prioridade baixa) — até que ele seja ativado."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a ordem correta do ciclo de vida de triagem de um defeito, segundo o material?",
+    "options": [
+      "Triado → Novo → Em correção → Fechado → Em verificação",
+      "Novo → Triado → Em correção → Em verificação → Fechado",
+      "Novo → Em correção → Triado → Fechado → Em verificação",
+      "Em verificação → Novo → Triado → Em correção → Fechado"
+    ],
+    "correct": 1,
+    "explanation": "A triagem confirma o fato, remove duplicidade, classifica impacto, decide prioridade e explicita o próximo passo, antes de seguir para correção, verificação e fechamento."
+  },
+  {
+    "type": "mc",
+    "q": "Quem pode marcar um defeito como \"em verificação\", e o que é necessário para efetivamente \"fechar\" o issue?",
+    "options": [
+      "Apenas o cliente final pode marcar como \"em verificação\"; o fechamento é automático após o deploy",
+      "Quem desenvolve pode marcar \"em verificação\"; o fechamento exige comprovação no ambiente/versão definidos",
+      "Qualquer pessoa da equipe pode fechar o issue a qualquer momento, sem comprovação",
+      "Apenas o time de QA pode marcar \"em verificação\" e fechar o issue"
+    ],
+    "correct": 1,
+    "explanation": "Essa separação evita que o desenvolvedor \"se autoafirme\" resolvido — o fechamento exige prova concreta no ambiente e versão acordados."
+  },
+  {
+    "type": "mc",
+    "q": "Ao classificar um defeito como \"não será corrigido\", o que o material exige que seja registrado?",
+    "options": [
+      "Apenas a data em que a decisão foi tomada",
+      "O risco aceito e quem decidiu",
+      "Nada precisa ser registrado, basta fechar o issue",
+      "Apenas a severidade original do defeito, sem outras informações"
+    ],
+    "correct": 1,
+    "explanation": "Registrar o risco aceito e a autoria da decisão garante rastreabilidade — evita que a decisão de não corrigir pareça um esquecimento em vez de uma escolha consciente."
+  },
+  {
+    "type": "mc",
+    "q": "O que a técnica dos \"5 porquês\" realmente exige, segundo o material?",
+    "options": [
+      "Exatamente cinco perguntas \"por quê\", nem mais nem menos",
+      "Não exige exatamente cinco perguntas — força a equipe a atravessar o sintoma e chegar a uma condição controlável",
+      "Que apenas uma pessoa sênior conduza o processo",
+      "Que a técnica só seja aplicada a defeitos de severidade crítica"
+    ],
+    "correct": 1,
+    "explanation": "No exemplo do material, o quinto \"porquê\" chega à causa raiz real (o caso de equivalência de e-mails não apareceu na análise nem na RTM) — o número de perguntas é apenas um meio, não um fim em si."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo do defeito de e-mail duplicado, por que normalizar apenas no controller foi considerado uma correção incompleta?",
+    "options": [
+      "Porque o controller não tem acesso ao banco de dados",
+      "Porque a invariante de normalização não estava explícita no modelo de domínio nem no banco — outro caminho de entrada poderia contornar a normalização feita só no controller",
+      "Porque o controller é uma camada obsoleta que deveria ser removida",
+      "Porque normalizar no controller viola diretamente a LGPD"
+    ],
+    "correct": 1,
+    "explanation": "As ações em camadas propostas incluem normalização centralizada em um tipo-valor Email e restrição única na persistência — cobrindo o problema onde quer que a invariante deva valer, não só em um ponto de entrada."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a ordem correta do fluxo de correção seguro descrito no material?",
+    "options": [
+      "Corrigir → Reproduzir → Localizar → Verificar → Regredir → Aprender",
+      "Reproduzir → Localizar → Corrigir → Regredir → Verificar → Aprender",
+      "Localizar → Corrigir → Reproduzir → Aprender → Regredir → Verificar",
+      "Aprender → Reproduzir → Corrigir → Localizar → Regredir → Verificar"
+    ],
+    "correct": 1,
+    "explanation": "O passo \"Reproduzir\" transforma o relato em um teste que falha no commit problemático — esse teste se torna a especificação viva da correção e, depois, o teste de regressão."
+  },
+  {
+    "type": "mc",
+    "q": "O que caracteriza um \"fechamento\" completo de um defeito corrigido, segundo o material?",
+    "options": [
+      "Apenas o merge do código na branch principal, sem mais nenhuma exigência",
+      "Issue vinculada ao commit/PR, teste de regressão identificável e resultado verde reproduzível",
+      "Apenas a confirmação verbal do desenvolvedor de que o problema foi resolvido",
+      "A simples reclassificação do status no sistema de rastreamento, sem evidência técnica"
+    ],
+    "correct": 1,
+    "explanation": "Sem essas três evidências, o fechamento não é rastreável — e o \"aprender\" do fluxo (atualizar RTM, documentação ou processo) também fica comprometido."
+  },
+  {
+    "type": "mc",
+    "q": "Qual métrica de defeitos o material explicitamente recomenda NÃO usar, e por quê?",
+    "options": [
+      "Taxa de reabertura, porque é impossível de medir com precisão",
+      "Quantidade de bugs por pessoa como produtividade — incentiva fragmentar, esconder ou disputar classificação e destrói colaboração",
+      "Idade do backlog crítico, porque não reflete risco real",
+      "Tempo de ciclo por severidade, porque varia demais entre times"
+    ],
+    "correct": 1,
+    "explanation": "Métricas de produtividade individual sobre bugs criam incentivos perversos: as pessoas passam a otimizar o número, não a qualidade real do sistema."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo o material, por que severidade crítica não implica automaticamente prioridade imediata?",
+    "options": [
+      "Porque severidade crítica é sempre um erro de classificação",
+      "Porque prioridade é uma decisão de negócio que também considera exposição real, urgência e existência de contorno — um defeito de alta severidade em um recurso desligado e não exposto pode ter prioridade baixa",
+      "Porque prioridade é definida exclusivamente pelo tempo de existência do defeito",
+      "Porque toda severidade crítica deve ser automaticamente rebaixada para evitar pânico na equipe"
+    ],
+    "correct": 1,
+    "explanation": "É exatamente o quadrante \"alta severidade, baixa prioridade\" da matriz: o dano potencial é grande, mas como o recurso ainda não está exposto, não há urgência de negócio imediata."
+  },
+  {
+    "type": "mc",
+    "q": "Na anatomia de um relato reproduzível, o que o campo \"Frequência, alcance e impacto\" deve conter?",
+    "options": [
+      "Apenas uma estimativa subjetiva de quão grave a pessoa que reportou considera o problema",
+      "Informações quantificáveis quando possível — quantos usuários são afetados, com que frequência o problema ocorre, e qual o impacto real",
+      "O nome da pessoa responsável por corrigir o defeito",
+      "A lista de todos os commits realizados na mesma semana"
+    ],
+    "correct": 1,
+    "explanation": "Quantificar frequência, alcance e impacto (quando possível) ajuda a triagem a decidir severidade e prioridade com base em dados, não apenas em opinião."
+  },
+  {
+    "type": "mc",
+    "q": "No template sugerido para GitHub Issues, qual campo obrigatório serve especificamente para definir quando o defeito pode ser considerado corrigido?",
+    "options": [
+      "Ambiente / versão",
+      "Critério de verificação",
+      "Resumo observável",
+      "Evidências sanitizadas"
+    ],
+    "correct": 1,
+    "explanation": "O \"Critério de verificação\" define objetivamente o que precisa ser comprovado para o issue poder ser fechado — evitando fechamentos baseados apenas em \"parece que funcionou\"."
+  },
+  {
+    "type": "mc",
+    "q": "Qual das opções abaixo está na lista de métricas ÚTEIS de gestão de defeitos citada pelo material?",
+    "options": [
+      "Quantidade de bugs encontrados por pessoa da equipe",
+      "Taxa de reabertura",
+      "Número de commits por dia de cada desenvolvedor",
+      "Quantidade de linhas de código alteradas por correção"
+    ],
+    "correct": 1,
+    "explanation": "Taxa de reabertura, tempo de ciclo por severidade, defeitos escapados por etapa, recorrência por causa e idade do backlog crítico são as métricas úteis citadas — nenhuma delas mede produtividade individual."
+  },
+  {
+    "type": "mc",
+    "q": "\"Um usuário relata login inconsistente\" é um exemplo, no vocabulário causal do material, de:",
+    "options": [
+      "Erro humano",
+      "Defeito",
+      "Incidente — o evento percebido e investigado",
+      "Severidade"
+    ],
+    "correct": 2,
+    "explanation": "Incidente é o evento percebido e investigado. Ele pode levar à descoberta de um defeito específico (ex.: comparação de e-mail sem normalização) que já existia, latente, no sistema."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Por que apenas normalizar a comparação de e-mails no controller é uma correção incompleta? Use o exemplo dos 5 porquês do material.",
+    "expected": "A resposta deve mostrar que a causa raiz não estava no ponto de entrada (controller), mas na ausência de uma invariante explícita no modelo de domínio e na persistência. Se a normalização existir apenas no controller, qualquer outro caminho de escrita (uma migração, uma integração, um script administrativo) pode inserir dados duplicados sem passar por aquela validação. A correção completa, descrita no material, centraliza a normalização em um tipo-valor Email (no domínio) e adiciona uma restrição única na persistência (no banco), além de testes de equivalência e atualização da RTM — cobrindo a regra onde quer que ela precise valer, e não apenas em um ponto específico do fluxo."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Qual informação torna um relato de defeito reproduzível? Cite pelo menos quatro elementos e explique por que cada um importa.",
+    "expected": "Uma boa resposta cita ao menos quatro dos elementos da anatomia do relato: (1) contexto — versão/commit e ambiente, para saber exatamente onde o problema ocorreu; (2) pré-condições — o estado necessário antes de executar, sem o qual o cenário não se repete; (3) passos mínimos numerados — sem ações irrelevantes que dificultem a reprodução; (4) esperado e obtido lado a lado, ligados ao requisito — para que não haja ambiguidade sobre o que estava errado; (5) evidência sanitizada — log, vídeo ou teste que comprove o comportamento sem expor dados sensíveis. Sem esses elementos, quem for investigar o defeito não consegue recriar a situação, e o relato vira apenas uma afirmação não verificável."
+  }
+]

@@ -1,0 +1,229 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 01 · Fundamentos</span>
+  <h3 id="c1-title">Fundamentos de Qualidade de Software</h3>
+  <p>O vocabulário básico da disciplina: o que é qualidade, a diferença entre QA, QC e
+  teste, verificação e validação, o vocabulário da ISO/IEC 25010, o custo da qualidade e
+  por que software maduro tende a ser mais confiável.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. Por que isso importa: quando qualidade falha</h4>
+  <p>Software com defeito não é uma inconveniência abstrata — é a diferença entre um sistema
+  funcionar e uma tragédia acontecer. Quatro casos reais mostram um padrão que se repete:
+  o defeito técnico é a faísca, mas o <strong>processo</strong> é o que decide se ele vira incêndio.</p>
+
+  <div class="chapter-grid cols-2">
+    <div class="card">
+      <h5>Ariane 5 (1996)</h5>
+      <p>O voo inaugural terminou em destruição 37 segundos após a decolagem: um trecho de
+      código reaproveitado do Ariane 4 tentou converter um número de 64 bits em uma
+      variável de 16 bits, em uma trajetória que gerava valores maiores do que os do
+      modelo anterior. O código estava "correto" no contexto antigo — ninguém o revalidou
+      no novo.</p>
+    </div>
+    <div class="card">
+      <h5>Knight Capital (2012)</h5>
+      <p>Uma nova versão foi implantada em sete dos oito servidores de produção. No oitavo,
+      código antigo e desativado voltou a ser executado. A empresa perdeu cerca de
+      US$ 440 milhões em 45 minutos — mais do que valia. Não foi um bug de algoritmo: foi
+      um processo de deploy sem verificação.</p>
+    </div>
+    <div class="card">
+      <h5>Boeing 737 MAX (2018–2019)</h5>
+      <p>Os acidentes da Lion Air 610 e da Ethiopian 302 mataram 346 pessoas. O sistema MCAS
+      empurrava o nariz da aeronave para baixo com base em um único sensor de ângulo de
+      ataque, sem checagem cruzada com o segundo sensor existente. A autoridade do sistema
+      foi ampliada de 0,6° para 2,5° sem refazer a análise de segurança, e o MCAS nem
+      constava do manual.</p>
+    </div>
+    <div class="card">
+      <h5>CrowdStrike (2024)</h5>
+      <p>Uma atualização de configuração derrubou cerca de 8,5 milhões de máquinas Windows
+      simultaneamente, parando aeroportos e hospitais. O arquivo defeituoso foi distribuído
+      para todos os clientes ao mesmo tempo, sem liberação gradual.</p>
+    </div>
+  </div>
+
+  <h4>2. O que é qualidade de software</h4>
+  <p>A ISO/IEC 25010 define qualidade de software como a <strong>capacidade de um produto
+  de satisfazer necessidades declaradas e implícitas quando usado sob condições
+  especificadas</strong>. Vale reparar em três palavras dessa definição:</p>
+  <dl class="term-list">
+    <dt>Declaradas</dt>
+    <dd>O que está escrito no requisito. Dá para conferir objetivamente: ou atende, ou não atende.</dd>
+    <dt>Implícitas</dt>
+    <dd>O que ninguém escreveu porque parecia óbvio — "obviamente a senha não aparece no log".
+    Boa parte dos incidentes graves mora aqui.</dd>
+    <dt>Condições especificadas</dt>
+    <dd>Qualidade é relativa ao contexto. Um sistema que responde em 2 s é excelente para um
+    relatório mensal e inaceitável para um autocomplete.</dd>
+  </dl>
+  <p>Existem duas leituras complementares dessa definição. <strong>Conformidade</strong> é
+  atender ao que foi especificado — a visão do engenheiro. <strong>Fitness for use</strong>
+  é servir de verdade a quem usa — a visão do cliente. Um sistema pode ter 100% de
+  conformidade e zero utilidade. Você precisa das duas.</p>
+
+  <h4>3. QA, QC e Teste não são sinônimos</h4>
+  <p>No mercado esses três termos são usados de forma intercambiável, e isso atrapalha. Eles
+  operam em níveis diferentes — repare na hierarquia: <strong>teste é uma técnica dentro de
+  QC, e QC é uma parte de QA</strong>.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead>
+        <tr><th>Termo</th><th>Atua sobre</th><th>Pergunta que responde</th><th>Exemplos</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>QA</strong><br>Quality Assurance</td><td>Processo</td><td>Estamos trabalhando de um jeito que tende a produzir software bom?</td><td>Definition of Done, política de code review, padrão de branch, treinamento</td></tr>
+        <tr><td><strong>QC</strong><br>Quality Control</td><td>Produto</td><td>Este artefato está bom o suficiente para seguir adiante?</td><td>Revisões, inspeções, análise estática, critérios de aceite</td></tr>
+        <tr><td><strong>Teste</strong></td><td>Evidência</td><td>Executando o software, ele se comporta como esperado?</td><td>Testes de unidade, integração, E2E, carga</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Um time pode ter cobertura de testes altíssima e ainda assim um processo ruim — se
+  ninguém revisa código, se o deploy é manual e improvisado, se não existe critério para
+  dizer que algo está pronto.</p>
+
+  <h4>4. Verificação, Validação e SQA</h4>
+  <div class="chapter-grid cols-2">
+    <div class="card">
+      <h5>Verificação</h5>
+      <p>"Are we building the product right?" — o artefato produzido está coerente com a
+      especificação da etapa anterior. Ex.: o código implementa o que o design descreve.</p>
+    </div>
+    <div class="card">
+      <h5>Validação</h5>
+      <p>"Are we building the right product?" — o sistema resolve o problema real de quem vai
+      usar. Ex.: o usuário consegue concluir a tarefa dele.</p>
+    </div>
+  </div>
+  <p>A distinção é prática, não acadêmica: é perfeitamente possível construir a coisa errada
+  com excelência técnica. Um formulário impecavelmente testado que pede uma informação que
+  o cliente não tem passa em toda a verificação e falha inteiramente na validação.</p>
+  <div class="callout">
+    <span class="callout-label">SQA — Software Quality Assurance (IEEE 730)</span>
+    <p>É a função que garante que verificação e validação de fato aconteceram — auditando
+    tanto o processo quanto o produto. A norma insiste em um ponto: SQA precisa de
+    <strong>independência organizacional</strong>. Quem audita não pode responder à mesma
+    pressão de prazo de quem entrega, senão a auditoria vira carimbo.</p>
+  </div>
+
+  <h4>5. ISO/IEC 25010: o vocabulário do não-funcional</h4>
+  <p>Dizer que um sistema "está ruim" não ajuda ninguém a consertá-lo. A ISO/IEC 25010
+  oferece um modelo com <strong>nove características de qualidade do produto</strong>, cada
+  uma desdobrada em subcaracterísticas — o vocabulário para transformar reclamação em
+  requisito.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Característica</th><th>Do que trata</th><th>Reclamação típica</th></tr></thead>
+      <tbody>
+        <tr><td>Adequação Funcional</td><td>Completude, correção e adequação ao propósito</td><td>"O cálculo está errado."</td></tr>
+        <tr><td>Eficiência de Performance</td><td>Tempo de resposta, throughput, uso de recursos</td><td>"Trava quando tem muita gente."</td></tr>
+        <tr><td>Compatibilidade</td><td>Coexistência e interoperabilidade</td><td>"Não conversa com o outro sistema."</td></tr>
+        <tr><td>Capacidade de Interação</td><td>Aprendizado, operabilidade, acessibilidade</td><td>"Ninguém entende essa tela."</td></tr>
+        <tr><td>Confiabilidade</td><td>Disponibilidade, tolerância a falhas, recuperação</td><td>"Cai toda semana."</td></tr>
+        <tr><td>Segurança</td><td>Confidencialidade, integridade, autenticidade</td><td>"Dá para ver o dado de outro cliente."</td></tr>
+        <tr><td>Manutenibilidade</td><td>Modularidade, reusabilidade, testabilidade</td><td>"Qualquer mudança quebra outra coisa."</td></tr>
+        <tr><td>Flexibilidade</td><td>Adaptabilidade, instalabilidade, escalabilidade</td><td>"Não roda no ambiente novo."</td></tr>
+        <tr><td>Safety</td><td>Evitar dano a pessoas, bens e ambiente</td><td>"Se falhar, alguém se machuca."</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-warn">
+    <span class="callout-label">Atenção com material antigo</span>
+    <p>A revisão de 2023 da norma reorganizou o modelo. Material antigo cita oito
+    características, com "Usabilidade" e "Portabilidade". Na versão atual são nove:
+    Usabilidade virou <strong>Capacidade de Interação</strong>, Portabilidade virou
+    <strong>Flexibilidade</strong>, e <strong>Safety</strong> passou a ser uma
+    característica própria. Os conceitos continuam válidos; os nomes mudaram.</p>
+  </div>
+
+  <h4>6. O custo da qualidade e o Shift-Left</h4>
+  <p>Existe uma crença persistente de que qualidade é um custo adicional que se corta quando
+  o prazo aperta. O modelo de <strong>Custo da Qualidade (CoSQ)</strong> mostra por que isso
+  é ilusão. O custo total se divide em duas colunas:</p>
+  <div class="chapter-grid cols-2">
+    <div class="card">
+      <h5>Conformidade — você escolhe pagar</h5>
+      <p><strong>Prevenção:</strong> treinamento, padrões, automação de pipeline.</p>
+      <p><strong>Avaliação:</strong> testes, code review, análise estática, auditoria.</p>
+    </div>
+    <div class="card">
+      <h5>Não-conformidade — a conta chega sozinha</h5>
+      <p><strong>Falha interna:</strong> retrabalho, atraso, hotfix antes do release.</p>
+      <p><strong>Falha externa:</strong> incidente em produção, suporte, multa, reputação.</p>
+    </div>
+  </div>
+  <p>Cortar a coluna da esquerda não elimina o custo — apenas o transfere para a direita,
+  onde ele é maior e você não controla mais quando ele aparece.</p>
+  <p>Daí vem o <strong>Shift-Left</strong>: mover as atividades de qualidade para o início do
+  ciclo. Barry Boehm popularizou a ideia de que o custo de corrigir um defeito cresce por
+  ordens de grandeza conforme a fase — algo em torno de <strong>1x nos requisitos, 10x na
+  codificação, 100x ou mais em produção</strong>. Trate esses multiplicadores como
+  heurística, não como lei: os números variam conforme o contexto. O que é consistentemente
+  verdadeiro é a direção da curva.</p>
+
+  <h4>7. Maturidade: o cerco que se fecha</h4>
+  <p>Existe uma intuição comum de que software novo é o software bom. Na prática acontece o
+  contrário: <strong>software novo é o mais perigoso</strong>. Ele tem muita superfície que
+  nunca foi percorrida. Cada caminho que ninguém executou é um lugar onde um defeito pode
+  estar dormindo.</p>
+  <p>Conforme o sistema envelhece em produção, usuários reais fazem coisas que nenhum teste
+  previu. Cada uma dessas situações revela um defeito que já estava lá. O software não
+  ficou pior — ele ficou mais conhecido. Isso é o ciclo de <strong>crescimento de
+  confiabilidade (reliability growth)</strong>:</p>
+  <ol>
+    <li><strong>Tempo de uso</strong> — o sistema encontra caminhos que ninguém tinha imaginado.</li>
+    <li><strong>Falha revelada</strong> — um defeito preexistente finalmente se manifesta.</li>
+    <li><strong>Ajuste + teste</strong> — a correção é feita e vira um teste de regressão.</li>
+    <li><strong>Cerco menor</strong> — aquele defeito específico não volta mais.</li>
+  </ol>
+  <div class="callout callout-bad">
+    <span class="callout-label">O passo mais negligenciado</span>
+    <p>Corrigir sem deixar um teste de regressão para trás significa que você vai resolver o
+    mesmo bug de novo daqui a seis meses. A suíte automatizada é a memória institucional de
+    tudo o que já deu errado.</p>
+  </div>
+  <p>O cerco reabre, em parte, a cada mudança grande: um refactor amplo, a troca de um
+  framework, um módulo novo. Território novo volta a ser território não explorado.
+  Maturidade não é uma linha reta descendente — é uma escada com degraus para cima toda vez
+  que o sistema muda de forma significativa.</p>
+  <p>Por fim: o cerco nunca chega a zero. Testar exaustivamente todas as combinações
+  possíveis de entrada e estado é inviável em qualquer sistema real. Por isso a meta
+  profissional não é "zero bugs" — é <strong>risco conhecido, medido e sob controle</strong>.</p>
+
+  <h4>8. Métricas — e como não se enganar com elas</h4>
+  <ul>
+    <li><strong>Cobertura de testes</strong> — percentual de linhas ou branches executadas pela
+    suíte. Cobertura alta não prova que os testes são bons; cobertura baixa prova que há
+    código sem rede de proteção.</li>
+    <li><strong>Densidade de defeitos</strong> — defeitos por mil linhas ou por módulo. Útil
+    para descobrir onde concentrar esforço.</li>
+    <li><strong>Eficiência de remoção de defeitos</strong> — defeitos encontrados antes do
+    release dividido pelo total. Mede diretamente se o processo está segurando o que deveria.</li>
+    <li><strong>Dívida técnica</strong> — estimativa de tempo para corrigir os problemas
+    apontados por análise estática (duplicação, complexidade, code smells).</li>
+  </ul>
+  <div class="callout callout-warn">
+    <span class="callout-label">Lei de Goodhart</span>
+    <p>Quando uma métrica vira meta, ela deixa de ser uma boa métrica. Se a nota depender de
+    cobertura, alguém vai escrever <code>expect(true).toBe(true)</code> até bater 100%.
+    Métrica serve para orientar conversa, não para substituir julgamento.</p>
+  </div>
+
+  <h4>9. Glossário: erro, defeito, falha</h4>
+  <p>Três palavras que o senso comum trata como sinônimo e que na disciplina têm significados
+  distintos:</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Termo</th><th>Definição</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td>Erro (error / mistake)</td><td>A ação humana equivocada</td><td>A pessoa desenvolvedora entendeu errado a regra de arredondamento</td></tr>
+        <tr><td>Defeito (defect / bug)</td><td>O resultado do erro, gravado no artefato</td><td>A linha de código que arredonda para baixo em vez de para cima</td></tr>
+        <tr><td>Falha (failure)</td><td>O comportamento incorreto observado em execução</td><td>A nota fiscal sai com R$ 0,01 a menos</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Um defeito só vira falha se o trecho for executado nas condições certas. Por isso existe
+  código com defeito rodando há anos em produção sem ninguém notar — até o dia em que a
+  condição aparece.</p>
+</div>

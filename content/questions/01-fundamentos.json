@@ -1,0 +1,252 @@
+[
+  {
+    "type": "mc",
+    "q": "O voo inaugural do Ariane 5, em 1996, terminou em destruição 37 segundos após a decolagem. Qual foi a causa técnica direta do acidente?",
+    "options": [
+      "Um trecho de código reaproveitado do Ariane 4 tentou converter um número de 64 bits em uma variável de 16 bits, e a trajetória do novo foguete gerava valores maiores que o modelo antigo suportava",
+      "Uma falha de comunicação por rádio entre o foguete e a base de controle durante a decolagem",
+      "Um erro de cálculo de combustível que fez o foguete ficar sem propulsão antes do previsto",
+      "Uma falha estrutural na fuselagem causada por vibração excessiva não prevista em projeto"
+    ],
+    "correct": 0,
+    "explanation": "O código estava \"correto\" no contexto do Ariane 4; ninguém revalidou o comportamento diante da nova trajetória, que gerava valores fora da faixa que a variável de 16 bits suportava."
+  },
+  {
+    "type": "mc",
+    "q": "Em 2012, a Knight Capital perdeu cerca de US$ 440 milhões em 45 minutos. Qual foi a origem do prejuízo?",
+    "options": [
+      "Um bug isolado de algoritmo de precificação em um único servidor de testes",
+      "Um processo de deploy sem verificação: a nova versão foi implantada em sete dos oito servidores, e código antigo e desativado voltou a rodar no oitavo",
+      "Um ataque externo que explorou uma vulnerabilidade conhecida e não corrigida",
+      "Uma falha de rede que impediu a sincronização de preços entre bolsas de valores"
+    ],
+    "correct": 1,
+    "explanation": "Não foi um bug de algoritmo — foi um processo de deploy sem verificação, que deixou código antigo ativo em um dos oito servidores de produção."
+  },
+  {
+    "type": "mc",
+    "q": "Nos acidentes dos Boeing 737 MAX (Lion Air 610 e Ethiopian 302), o sistema MCAS empurrava o nariz da aeronave para baixo. Qual combinação de fatores tornou isso possível?",
+    "options": [
+      "O MCAS dependia de um único sensor de ângulo de ataque sem checagem cruzada, e sua autoridade foi ampliada de 0,6° para 2,5° sem refazer a análise de segurança",
+      "O MCAS usava os dois sensores de ângulo de ataque, mas um deles estava fisicamente danificado desde a fabricação",
+      "O sistema era experimental e não deveria ter sido ativado em voos comerciais",
+      "A tripulação recebeu treinamento incorreto sobre como desligar o piloto automático"
+    ],
+    "correct": 0,
+    "explanation": "O avião tinha dois sensores de ângulo de ataque, mas o MCAS usava só um, sem checagem cruzada; além disso, sua autoridade foi ampliada sem nova análise de segurança, e o sistema sequer constava do manual."
+  },
+  {
+    "type": "mc",
+    "q": "O incidente da CrowdStrike em 2024, que derrubou cerca de 8,5 milhões de máquinas Windows, evidencia principalmente qual falha de processo?",
+    "options": [
+      "Falta de testes automatizados de qualquer tipo no ciclo de desenvolvimento",
+      "Distribuição do arquivo defeituoso de configuração para todos os clientes ao mesmo tempo, sem liberação gradual",
+      "Uso de uma linguagem de programação insegura no núcleo do sistema",
+      "Ausência total de um sistema de controle de versão"
+    ],
+    "correct": 1,
+    "explanation": "O padrão se repete nos quatro casos históricos: o defeito técnico é a faísca, mas o processo — aqui, a ausência de rollout gradual — é o que decide se ele vira incêndio."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a ISO/IEC 25010, qualidade de software é a capacidade de satisfazer necessidades declaradas e implícitas sob condições especificadas. O que caracteriza uma necessidade \"implícita\"?",
+    "options": [
+      "Algo escrito explicitamente no documento de requisitos",
+      "Algo que ninguém escreveu porque parecia óbvio — como \"a senha não deve aparecer no log\" — e onde moram boa parte dos incidentes graves",
+      "Uma funcionalidade que o cliente pediu por e-mail, mas não registrou formalmente",
+      "Um requisito que só se aplica em ambiente de testes, nunca em produção"
+    ],
+    "correct": 1,
+    "explanation": "Necessidades declaradas dá para conferir objetivamente contra o requisito escrito; as implícitas são o que parecia óbvio demais para escrever — e é aí que moram muitos incidentes graves."
+  },
+  {
+    "type": "mc",
+    "q": "Um sistema tem 100% de conformidade com os requisitos especificados, mas nenhum usuário consegue realizar suas tarefas com ele. O que esse cenário ilustra?",
+    "options": [
+      "Que conformidade (visão do engenheiro) e fitness for use (visão do cliente) são leituras complementares, e um sistema pode ter uma sem ter a outra",
+      "Que os requisitos foram mal escritos e, portanto, a conformidade não deveria ter sido medida",
+      "Que o sistema certamente tem um defeito de segurança não identificado",
+      "Que a equipe de QA não fez seu trabalho corretamente"
+    ],
+    "correct": 0,
+    "explanation": "Conformidade é atender ao que foi especificado; fitness for use é servir de verdade a quem usa. Um sistema pode ter 100% de conformidade e zero utilidade — por isso as duas leituras são necessárias."
+  },
+  {
+    "type": "mc",
+    "q": "Um time tem cobertura de testes altíssima, mas ninguém revisa código e o deploy é manual e improvisado. Como isso deve ser interpretado à luz da distinção QA × QC × Teste?",
+    "options": [
+      "Isso é impossível: cobertura alta implica automaticamente processo de QA maduro",
+      "O time pode ter QC (o artefato passa nos testes) sem ter QA (o processo como um todo não garante software bom)",
+      "Isso significa que o time não pratica nem QA nem QC, apenas testes soltos",
+      "Cobertura de testes é, por definição, uma métrica de QA, então o processo está garantido"
+    ],
+    "correct": 1,
+    "explanation": "Teste é uma técnica dentro de QC, e QC é uma parte de QA. É possível ter cobertura de testes altíssima (evidência) e ainda assim um processo ruim (QA), se não há revisão de código nem disciplina de deploy."
+  },
+  {
+    "type": "mc",
+    "q": "Um formulário foi impecavelmente testado e passa em toda a verificação, mas pede uma informação que o cliente não possui, o que o impede de concluir a tarefa. Isso é um exemplo de falha em:",
+    "options": [
+      "Verificação, porque o código não implementa o que o design descreve",
+      "Validação, porque o sistema não resolve o problema real de quem vai usar, mesmo estando tecnicamente correto",
+      "SQA, porque a auditoria de processo não foi realizada",
+      "Segurança, uma das nove características da ISO/IEC 25010"
+    ],
+    "correct": 1,
+    "explanation": "Verificação pergunta \"estamos construindo o produto certo\" tecnicamente; validação pergunta se o sistema resolve o problema real do usuário. É perfeitamente possível construir a coisa errada com excelência técnica."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a IEEE 730, o SQA (Software Quality Assurance) precisa de independência organizacional. Por quê?",
+    "options": [
+      "Porque a lei exige que times de qualidade sejam terceirizados",
+      "Porque quem audita não pode responder à mesma pressão de prazo de quem entrega — senão a auditoria vira carimbo",
+      "Porque times de desenvolvimento não têm conhecimento técnico suficiente para se autoavaliar",
+      "Porque a independência reduz o custo total de operação do time de QA"
+    ],
+    "correct": 1,
+    "explanation": "A norma insiste nesse ponto: se quem audita responde à mesma pressão de prazo de quem entrega, a auditoria deixa de ser crítica e vira apenas um carimbo formal."
+  },
+  {
+    "type": "mc",
+    "q": "Material didático mais antigo cita oito características de qualidade da ISO/IEC 25010, incluindo \"Usabilidade\" e \"Portabilidade\". O que mudou na revisão de 2023 da norma?",
+    "options": [
+      "As nove características antigas foram reduzidas para sete, eliminando Segurança e Confiabilidade",
+      "Usabilidade virou Capacidade de Interação, Portabilidade virou Flexibilidade, e Safety passou a ser uma característica própria, totalizando nove",
+      "A norma manteve exatamente as mesmas oito características, apenas reorganizando as subcaracterísticas",
+      "Todas as características foram renomeadas para termos em inglês, sem mudança de conceito"
+    ],
+    "correct": 1,
+    "explanation": "A reorganização de 2023 trocou nomes (Usabilidade → Capacidade de Interação; Portabilidade → Flexibilidade) e promoveu Safety a característica própria — os conceitos continuam válidos, os nomes mudaram."
+  },
+  {
+    "type": "mc",
+    "q": "A reclamação de um usuário é: \"o sistema não conversa com o outro sistema da empresa parceira\". Qual característica da ISO/IEC 25010 melhor classifica esse problema?",
+    "options": [
+      "Adequação Funcional",
+      "Compatibilidade",
+      "Manutenibilidade",
+      "Capacidade de Interação"
+    ],
+    "correct": 1,
+    "explanation": "Compatibilidade trata de coexistência e interoperabilidade — exatamente o tipo de problema descrito na reclamação \"não conversa com o outro sistema\"."
+  },
+  {
+    "type": "mc",
+    "q": "No modelo de Custo da Qualidade (CoSQ), em qual coluna estão \"treinamento, padrões, automação de pipeline\" e \"testes, code review, análise estática\"?",
+    "options": [
+      "Não-conformidade, porque são custos que aparecem depois do release",
+      "Conformidade — a coluna que você escolhe pagar, dividida em prevenção e avaliação",
+      "Nenhuma das duas colunas: são custos operacionais, não custos de qualidade",
+      "Falha externa, porque envolvem processos formais de auditoria"
+    ],
+    "correct": 1,
+    "explanation": "Prevenção (treinamento, padrões, automação) e avaliação (testes, code review, análise estática) formam a coluna de conformidade — você escolhe pagar por ela antes do problema acontecer."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a heurística popularizada por Barry Boehm sobre o Shift-Left, como cresce o custo de corrigir um defeito conforme a fase do ciclo de vida avança?",
+    "options": [
+      "Permanece constante, independente da fase em que é corrigido",
+      "Cresce por ordens de grandeza — algo em torno de 1x nos requisitos, 10x na codificação, 100x ou mais em produção",
+      "Diminui conforme o software amadurece em produção",
+      "Só cresce se o defeito estiver relacionado à segurança"
+    ],
+    "correct": 1,
+    "explanation": "Os números variam conforme o contexto, então devem ser tratados como heurística — mas a direção da curva é consistente, e ela justifica revisar um requisito ambíguo hoje em vez de descobrir o mal-entendido após o deploy."
+  },
+  {
+    "type": "mc",
+    "q": "Por que, segundo o material, software recém-lançado tende a ser mais arriscado do que software maduro, mesmo com código \"mais elegante\"?",
+    "options": [
+      "Porque desenvolvedores juniores geralmente escrevem o código de sistemas novos",
+      "Porque o software novo tem muita superfície que nunca foi percorrida — cada caminho não executado é um lugar onde um defeito pode estar dormindo",
+      "Porque sistemas novos não passam por nenhum tipo de teste antes do lançamento",
+      "Porque sistemas novos usam sempre tecnologias experimentais e não testadas pelo mercado"
+    ],
+    "correct": 1,
+    "explanation": "Conforme o sistema envelhece em produção, usuários reais revelam caminhos que nenhum teste previu. O software não fica pior — ele fica mais conhecido, e esse é o mecanismo do crescimento de confiabilidade."
+  },
+  {
+    "type": "mc",
+    "q": "No ciclo de crescimento de confiabilidade (reliability growth), qual é o passo mais frequentemente negligenciado, segundo o material?",
+    "options": [
+      "\"Tempo de uso\", porque as equipes evitam colocar o sistema em produção",
+      "\"Ajuste + teste\": corrigir sem deixar um teste de regressão para trás, o que faz o mesmo bug reaparecer meses depois",
+      "\"Falha revelada\", porque os usuários raramente reportam problemas",
+      "\"Cerco menor\", porque a área de incerteza nunca diminui de fato"
+    ],
+    "correct": 1,
+    "explanation": "Corrigir sem deixar um teste de regressão significa resolver o mesmo bug de novo no futuro. A suíte automatizada é a memória institucional de tudo que já deu errado."
+  },
+  {
+    "type": "mc",
+    "q": "Depois de um refactor amplo ou da troca de um framework, o que costuma acontecer com o \"cerco\" de confiabilidade construído até então?",
+    "options": [
+      "Ele permanece intacto, já que os testes de regressão continuam válidos",
+      "Ele se fecha ainda mais, porque o refactor naturalmente aumenta a cobertura",
+      "Ele reabre, ao menos em parte: território novo volta a ser território não explorado",
+      "Ele deixa de existir como conceito, sendo substituído por um novo ciclo de vida do produto"
+    ],
+    "correct": 2,
+    "explanation": "Maturidade não é uma linha reta descendente — é uma escada com degraus para cima toda vez que o sistema muda de forma significativa, como em um refactor amplo ou troca de framework."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é, segundo o material, a meta profissional realista em relação a defeitos de software?",
+    "options": [
+      "Zero bugs antes de qualquer release para produção",
+      "Risco conhecido, medido e sob controle — já que testar exaustivamente todas as combinações é inviável em qualquer sistema real",
+      "Cobertura de testes de 100% em todas as linhas de código",
+      "Eliminar completamente a fase de manutenção após o lançamento"
+    ],
+    "correct": 1,
+    "explanation": "O cerco nunca chega a zero. Por isso a meta profissional não é \"zero bugs\" — é risco conhecido, medido e sob controle. Quem promete software sem defeito está vendendo alguma coisa."
+  },
+  {
+    "type": "mc",
+    "q": "Sobre a métrica \"cobertura de testes\", qual afirmação é correta?",
+    "options": [
+      "Cobertura alta prova que os testes são bons e que o sistema está protegido",
+      "Cobertura baixa prova que há código sem rede de proteção, mas cobertura alta não prova que os testes são bons",
+      "Cobertura é irrelevante e não deve ser medida em nenhum contexto",
+      "Cobertura mede exclusivamente a quantidade de testes escritos, não sua execução"
+    ],
+    "correct": 1,
+    "explanation": "Cobertura alta não prova que os testes são bons — apenas que aquele código foi executado. Cobertura baixa, por outro lado, prova com certeza que existe código sem rede de proteção."
+  },
+  {
+    "type": "mc",
+    "q": "A Lei de Goodhart é citada no material com o exemplo de alguém escrevendo `expect(true).toBe(true)` várias vezes. O que essa lei afirma?",
+    "options": [
+      "Que testes automatizados sempre substituem revisão humana de código",
+      "Que quando uma métrica vira meta, ela deixa de ser uma boa métrica",
+      "Que cobertura de testes deve ser sempre 100% para ser confiável",
+      "Que métricas de qualidade só fazem sentido em projetos de código aberto"
+    ],
+    "correct": 1,
+    "explanation": "Se a nota depende de cobertura, alguém encontra um jeito de \"bater\" a meta sem gerar proteção real. Métrica serve para orientar conversa, não para substituir julgamento."
+  },
+  {
+    "type": "mc",
+    "q": "Uma linha de código que arredonda um valor monetário para baixo em vez de para cima, mas que roda há dois anos em produção sem que ninguém tenha notado nenhum problema, ilustra qual conceito do glossário erro/defeito/falha?",
+    "options": [
+      "Um erro humano que ainda não se tornou defeito",
+      "Um defeito latente que ainda não se manifestou como falha, porque as condições certas de execução ainda não ocorreram",
+      "Uma falha que já foi corrigida, mas cujo registro não foi atualizado",
+      "Um incidente que não gerou nenhum defeito no código"
+    ],
+    "correct": 1,
+    "explanation": "Defeito é o resultado do erro, gravado no artefato; falha é o comportamento incorreto observado em execução. Um defeito só vira falha quando o trecho é executado nas condições certas — por isso pode ficar latente por anos."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Explique, com suas próprias palavras e em no máximo cinco linhas, por que \"temos 90% de cobertura de testes\" não é o mesmo que \"temos qualidade\".",
+    "expected": "A resposta esperada deve mencionar que cobertura mede apenas o que foi executado pela suíte, não o que foi verificado com asserções corretas — um teste sem assert soma cobertura e não protege nada. Além disso, qualidade é multidimensional (ISO/IEC 25010: performance, segurança, usabilidade, manutenibilidade etc.), e cobertura de testes unitários não fala nada sobre a maioria dessas características. Também vale citar a Lei de Goodhart: ao virar meta, a métrica de cobertura pode ser \"inflada\" artificialmente sem gerar proteção real."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Diferencie erro, defeito e falha usando um exemplo próprio, incluindo um caso de defeito que ainda não virou falha.",
+    "expected": "Erro é a ação humana equivocada (ex.: a pessoa desenvolvedora entendeu errado uma regra de negócio); defeito é o resultado desse erro gravado no artefato (ex.: uma linha de código com a regra implementada incorretamente); falha é o comportamento incorreto observado em execução (ex.: um cliente recebeu um valor errado na tela). Um bom exemplo de defeito que ainda não virou falha é um código com uma condição de borda mal tratada (por exemplo, uma divisão que falharia com um valor específico) que nunca foi executado com aquele valor em produção — o defeito existe, latente, mas a falha ainda não se manifestou."
+  }
+]

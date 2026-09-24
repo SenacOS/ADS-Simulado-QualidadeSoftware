@@ -1,0 +1,51 @@
+[
+  {
+    "id": "c1",
+    "slug": "01-fundamentos",
+    "label": "Fundamentos de Qualidade de Software",
+    "short": "Fundamentos",
+    "toc": "Fundamentos de Qualidade"
+  },
+  {
+    "id": "c2",
+    "slug": "02-atam-cenarios",
+    "label": "ATAM, Utility Tree e Cenários",
+    "short": "ATAM",
+    "toc": "ATAM e Cenários de Qualidade"
+  },
+  {
+    "id": "c3",
+    "slug": "03-arquitetura-c4",
+    "label": "Arquitetura para Qualidade (C4)",
+    "short": "Arquitetura",
+    "toc": "Arquitetura para Qualidade"
+  },
+  {
+    "id": "c4",
+    "slug": "04-tecnicas-teste",
+    "label": "Técnicas de Projeto de Teste",
+    "short": "Técnicas de teste",
+    "toc": "Técnicas de Projeto de Teste"
+  },
+  {
+    "id": "c5",
+    "slug": "05-gestao-defeitos",
+    "label": "Gestão de Defeitos",
+    "short": "Defeitos",
+    "toc": "Gestão de Defeitos"
+  },
+  {
+    "id": "c6",
+    "slug": "06-integracao-continua",
+    "label": "Integração Contínua",
+    "short": "CI",
+    "toc": "Integração Contínua"
+  },
+  {
+    "id": "c7",
+    "slug": "07-testes-cobertura",
+    "label": "Testes Avançados e Cobertura",
+    "short": "Cobertura",
+    "toc": "Testes Avançados e Cobertura"
+  }
+]

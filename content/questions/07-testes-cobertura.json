@@ -1,0 +1,216 @@
+[
+  {
+    "type": "mc",
+    "q": "Segundo o cenário de qualidade E2, o que acontece quando um token está expirado, mesmo que a assinatura do usuário esteja ativa?",
+    "options": [
+      "O acesso é liberado, porque a assinatura ativa tem prioridade sobre a expiração do token",
+      "O acesso é negado — token expirado nunca libera acesso, independentemente do estado da assinatura",
+      "O sistema pede renovação automática do token sem negar o acesso",
+      "O comportamento depende do plano do usuário (free ou premium)"
+    ],
+    "correct": 1,
+    "explanation": "A regra crítica de E2 é clara: token expirado nunca libera acesso, mesmo com assinatura ativa. Só token válido e vigente permite prosseguir para as demais decisões de autorização."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a tabela de decisão de E2, o que acontece com um token revogado?",
+    "options": [
+      "Acesso liberado, pois revogação só afeta o próximo login",
+      "Acesso negado, com o motivo estável TOKEN_REVOGADO",
+      "O sistema aguarda confirmação manual do administrador",
+      "O comportamento não está definido para esse caso"
+    ],
+    "correct": 1,
+    "explanation": "Token ausente, inválido ou revogado são todos negados, cada um com um motivo estável e distinto (TOKEN_AUSENTE, TOKEN_INVALIDO, TOKEN_REVOGADO), o que facilita diagnóstico e teste."
+  },
+  {
+    "type": "mc",
+    "q": "Quando o material recomenda o uso de `@Nested` no JUnit Jupiter, e qual é o cuidado associado?",
+    "options": [
+      "Sempre usar `@Nested` em qualquer classe de teste, sem exceção",
+      "Usar para agrupar contextos, como \"quando o token está expirado\" — mas evitar criar hierarquia sem ganho real de leitura",
+      "Usar apenas quando há mais de cem métodos de teste na mesma classe",
+      "`@Nested` substitui completamente a necessidade de `@BeforeEach`"
+    ],
+    "correct": 1,
+    "explanation": "`@Nested` organiza os testes por contexto de negócio (ex.: token expirado, token revogado), tornando a leitura mais clara — mas hierarquia sem propósito só adiciona complexidade."
+  },
+  {
+    "type": "mc",
+    "q": "Por que o material recomenda `assertThrows` verificando tipo ou código da exceção, e não o texto da mensagem?",
+    "options": [
+      "Porque o JUnit não suporta comparação de texto em nenhuma hipótese",
+      "Porque o texto da mensagem de exceção é volátil e pode mudar sem alterar o contrato real do comportamento — o tipo/código é o que importa",
+      "Porque mensagens de texto sempre contêm dados sensíveis",
+      "Porque `assertThrows` não pode ser combinado com `assertAll`"
+    ],
+    "correct": 1,
+    "explanation": "\"Exceção é parte do contrato\" — mas o contrato é o tipo ou código, não a redação exata da mensagem, que pode ser alterada por motivos de UX sem quebrar o comportamento esperado."
+  },
+  {
+    "type": "mc",
+    "q": "Por que injetar `Clock` no código de produção, em vez de chamar `Instant.now()` diretamente dentro da regra de negócio?",
+    "options": [
+      "Porque `Instant.now()` é mais lento que `Clock.fixed()`",
+      "Porque chamar `Instant.now()` dentro da regra prende o domínio ao ambiente; injetar `Clock` permite usar `Clock.fixed` nos testes, sem espera, corrida ou dependência de timezone local",
+      "Porque `Clock` é obrigatório por especificação do Java 21",
+      "Porque `Instant.now()` não pode ser usado em testes parametrizados"
+    ],
+    "correct": 1,
+    "explanation": "Em produção, injeta-se `Clock.systemUTC()`; em testes, `Clock.fixed()` com um instante determinístico — eliminando qualquer dependência de tempo real ou fuso horário local."
+  },
+  {
+    "type": "mc",
+    "q": "No teste parametrizado com `@CsvSource({\"-1, false\", \"0, false\", \"1, true\"})` para o deslocamento de expiração, qual tipo de erro essa trinca é desenhada para capturar?",
+    "options": [
+      "Erros de conexão com o banco de dados",
+      "Erros de off-by-one — a diferença entre usar `<` e `<=` na condição de expiração",
+      "Erros de formatação de data em diferentes locales",
+      "Erros de serialização JSON"
+    ],
+    "correct": 1,
+    "explanation": "A trinca imediatamente antes / no limite / imediatamente depois captura exatamente esse tipo de erro sutil de comparação — o mesmo raciocínio da análise de valor limite aplicado a testes parametrizados."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo o material, o que a cobertura de código (linhas, branches, complexidade) efetivamente prova?",
+    "options": [
+      "Que os testes têm asserções corretas sobre o comportamento esperado",
+      "Que aquele trecho foi executado — é condição necessária de observação, não prova de assert correto",
+      "Que o sistema está livre de defeitos de segurança",
+      "Que a performance do sistema está dentro do esperado"
+    ],
+    "correct": 1,
+    "explanation": "Um teste que executa o ramo e não verifica sua decisão aumenta cobertura sem reduzir risco — o mesmo alerta já visto na aula de técnicas de teste, agora aplicado à ferramenta JaCoCo."
+  },
+  {
+    "type": "mc",
+    "q": "Qual prática é citada como \"antiobjetivo\" ao perseguir metas de cobertura?",
+    "options": [
+      "Escrever testes de unidade para as regras de autorização críticas",
+      "Escrever testes triviais de getters ou excluir classes relevantes da medição apenas para atingir o percentual",
+      "Usar `@ParameterizedTest` para casos de fronteira",
+      "Ler o relatório HTML do JaCoCo classe por classe"
+    ],
+    "correct": 1,
+    "explanation": "Esses são exemplos de \"inflar\" o número sem gerar proteção real — o mesmo problema já discutido com a Lei de Goodhart na primeira aula da disciplina."
+  },
+  {
+    "type": "mc",
+    "q": "Na configuração do plugin `jacoco-maven-plugin` mostrada no material, quais são as metas mínimas configuradas no elemento BUNDLE?",
+    "options": [
+      "90% de linhas e 90% de branches",
+      "80% de cobertura de LINE e 70% de cobertura de BRANCH",
+      "100% de linhas e 50% de branches",
+      "O material não define nenhuma meta mínima, apenas gera o relatório"
+    ],
+    "correct": 1,
+    "explanation": "O goal `check`, executado na fase `verify`, interrompe o build se a cobertura cair abaixo de 0.80 (LINE) ou 0.70 (BRANCH) no elemento BUNDLE."
+  },
+  {
+    "type": "mc",
+    "q": "Por que o material alerta para nunca configurar `forkCount=0` no Surefire quando o JaCoCo está em uso?",
+    "options": [
+      "Porque isso deixaria os testes mais lentos, sem outro efeito",
+      "Porque isso impede o javaagent do JaCoCo de registrar a cobertura corretamente",
+      "Porque `forkCount=0` é uma configuração obsoleta e não é mais reconhecida pelo Maven",
+      "Porque isso desativaria completamente a execução dos testes"
+    ],
+    "correct": 1,
+    "explanation": "O JaCoCo depende de um javaagent injetado no processo de execução dos testes; `forkCount=0` interfere nesse mecanismo e compromete a coleta de cobertura."
+  },
+  {
+    "type": "mc",
+    "q": "Ao ler o relatório HTML do JaCoCo, qual é a recomendação de por onde começar, em vez de olhar apenas o percentual total?",
+    "options": [
+      "Começar pelas classes com nomes em ordem alfabética",
+      "Começar pelas regras de autorização e sessão — as áreas de maior risco — não pelo percentual global",
+      "Começar pelas classes com menos linhas de código, por serem mais rápidas de revisar",
+      "Ignorar o relatório e confiar apenas no número exibido no terminal"
+    ],
+    "correct": 1,
+    "explanation": "Uma linha vermelha deve ser avaliada quanto a risco, código morto ou cenário ausente; uma branch amarela deve levar à identificação do resultado não executado — sempre priorizando as regras críticas."
+  },
+  {
+    "type": "mc",
+    "q": "Ao atualizar a RTM (matriz de rastreabilidade) depois de fechar uma lacuna de cobertura, o que deve ser registrado?",
+    "options": [
+      "Uma promessa genérica de que \"a cobertura está adequada\"",
+      "O caso de teste específico que cobre aquele cenário, não uma promessa genérica de cobertura",
+      "Apenas o percentual total do projeto, sem detalhamento por caso",
+      "O nome do desenvolvedor que escreveu o teste, sem mais detalhes"
+    ],
+    "correct": 1,
+    "explanation": "A RTM deve rastrear a relação entre cenário e caso de teste concreto — uma promessa genérica de cobertura não permite saber, no futuro, se aquele cenário específico continua protegido."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é o papel do SonarCloud/SonarQube Cloud em relação aos testes dinâmicos (JUnit + JaCoCo)?",
+    "options": [
+      "Substitui completamente a necessidade de testes dinâmicos",
+      "Complementa os testes dinâmicos: procura padrões de bugs, vulnerabilidades, riscos de manutenibilidade e duplicação sem executar o sistema",
+      "Serve apenas para medir performance em produção",
+      "É uma alternativa ao JaCoCo, e os dois nunca devem ser usados juntos"
+    ],
+    "correct": 1,
+    "explanation": "Análise estática (SonarCloud) e testes dinâmicos (JUnit/JaCoCo) atacam o problema de ângulos diferentes e se complementam — um não substitui o outro."
+  },
+  {
+    "type": "mc",
+    "q": "No onboarding do SonarCloud descrito no material, onde deve ficar o `SONAR_TOKEN`?",
+    "options": [
+      "Diretamente no `pom.xml`, como valor literal, para facilitar o acesso da equipe",
+      "Como secret configurado nos GitHub Actions secrets — nunca como valor literal no código ou no workflow",
+      "Em um arquivo `.env` versionado no repositório público",
+      "No corpo do e-mail enviado para toda a equipe de desenvolvimento"
+    ],
+    "correct": 1,
+    "explanation": "Segredos de análise nunca devem aparecer versionados — o token fica isolado como secret do GitHub Actions, referenciado no workflow, mas nunca exposto em texto plano."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo a estratégia de Quality Gate descrita no material, como legado e novo código devem ser tratados?",
+    "options": [
+      "Da mesma forma, exigindo 100% de cobertura em ambos imediatamente",
+      "De forma diferente: o projeto mantém metas globais (80% linhas, 70% branches), mas o novo código não deve piorar segurança ou manutenibilidade, com atenção especial às regras críticas como E2",
+      "O legado deve ser completamente reescrito antes de qualquer novo código ser aceito",
+      "Apenas o novo código é analisado; o legado é ignorado permanentemente pelo Quality Gate"
+    ],
+    "correct": 1,
+    "explanation": "Essa é uma prática comum e pragmática: tratar dívida técnica legada de forma realista, enquanto se protege ativamente a qualidade de tudo que é adicionado a partir de agora."
+  },
+  {
+    "type": "mc",
+    "q": "O que o material recomenda ao lidar com uma issue apontada pelo SonarCloud no pull request?",
+    "options": [
+      "Sempre marcar como falso positivo, para acelerar a aprovação do Quality Gate",
+      "Corrigir, aceitar com justificativa registrada, ou marcar como falso positivo com evidência — nunca apenas para \"ficar verde\" sem compreender o fluxo",
+      "Ignorar completamente issues de baixa severidade, sem qualquer registro",
+      "Desabilitar a análise estática até o final do projeto"
+    ],
+    "correct": 1,
+    "explanation": "O Quality Gate só tem valor se a decisão for confiável — marcar algo como falso positivo sem entender o fluxo real do código destrói essa confiabilidade."
+  },
+  {
+    "type": "mc",
+    "q": "Por que pull requests vindos de forks podem não receber o `SONAR_TOKEN` durante a execução do workflow?",
+    "options": [
+      "Por uma limitação técnica do Maven, não do GitHub Actions",
+      "Por proteção de segurança: PRs de forks externos não recebem secrets automaticamente, e o workflow precisa ser planejado para não expor o token nesse cenário",
+      "Porque forks nunca podem rodar testes automatizados de qualquer tipo",
+      "Porque `SONAR_TOKEN` só funciona em branches protegidas da própria organização"
+    ],
+    "correct": 1,
+    "explanation": "Essa é uma proteção deliberada da plataforma: código de fora da organização não deve ter acesso automático a segredos, o que exige planejamento cuidadoso do workflow."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Como é possível obter 100% de cobertura de linha em uma classe e ainda assim deixar um branch (ramo) sem cobrir?",
+    "expected": "Cobertura de linha considera uma linha \"coberta\" se ela foi executada ao menos uma vez, independentemente de quantos caminhos de decisão ela contém. Uma única linha com uma condição composta (por exemplo, `if (a && b)`) pode ser \"tocada\" por um teste que faz apenas o caminho verdadeiro completo, sem nunca exercitar a combinação em que `a` é verdadeiro e `b` é falso, ou vice-versa. Assim, a linha aparece 100% coberta, mas o branch específico dessa combinação nunca foi executado — e é exatamente esse tipo de lacuna que a cobertura de branch (e, mais ainda, a de condição) revela, mas a de linha, sozinha, esconde."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Qual é o perigo de testar comportamento dependente de tempo usando `Thread.sleep()` em vez de um relógio determinístico (Clock)?",
+    "expected": "Usar `Thread.sleep()` torna o teste lento (precisa esperar o tempo real passar), instável (o tempo de execução da máquina de CI pode variar, criando testes intermitentes/flaky) e dependente do ambiente (fuso horário, carga da máquina). Além disso, testar cenários de fronteira precisos — como \"exatamente no instante de expiração\" — se torna quase impossível de forma confiável com `sleep`, porque não há garantia de que o tempo decorrido seja exatamente o desejado. Injetar um `Clock` (com `Clock.fixed` nos testes) elimina a espera, torna o teste determinístico e permite testar exatamente os instantes -1, 0 e +1 segundo do limite, sem depender do relógio real da máquina."
+  }
+]

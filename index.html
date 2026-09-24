@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qualidade de Software — ADS Senac</title>
+<meta name="description" content="Material de estudo interativo de Qualidade de Software — ADS Senac. Teoria organizada por conteúdo e questionários com ~20 questões cada, tema violeta/rosa, claro e escuro.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧪</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header" id="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">QS</span>
+      Qualidade de Software <span class="brand-sub">/ ADS</span>
+    </a>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Alternar tema claro/escuro">◐</button>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="site-menu">
+        <span class="nav-toggle-icon" aria-hidden="true">≡</span>
+        <span class="nav-toggle-label">Menu</span>
+      </button>
+    </div>
+  </div>
+  <!-- Preenchido por js/app.js a partir de content/chapters.json -->
+  <nav class="site-menu" id="site-menu" aria-label="Navegação de conteúdos" hidden></nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-card">
+        <p class="hero-eyebrow">ADS · Guia + Simulado</p>
+        <h1>Qualidade de <span>Software</span></h1>
+        <p class="lede">
+          Revisão teórica completa e questionários interativos da disciplina de Qualidade de Software,
+          do curso de Análise e Desenvolvimento de Sistemas — Senac. O conteúdo das aulas foi
+          <strong>reorganizado por assunto</strong>, agrupando temas relacionados que apareciam em
+          aulas diferentes, em vez de seguir a ordem cronológica.
+        </p>
+        <div class="chips">
+          <span class="chip">7 conteúdos teóricos</span>
+          <span class="chip"><span id="total-questions">~140</span> questões nos simulados</span>
+          <span class="chip">7 questionários independentes</span>
+          <span class="chip">Tema claro e escuro</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet" id="conteudos">
+    <div class="wrap">
+      <div class="section-intro">
+        <h2>Sumário dos conteúdos</h2>
+        <p>Cada bloco abaixo tem teoria completa seguida do seu próprio questionário — as alternativas
+        são embaralhadas a cada início de simulado, e o gabarito nunca muda de lugar.</p>
+      </div>
+      <div class="toc" id="toc"></div>
+    </div>
+  </section>
+
+  <!-- Capítulos (teoria + questionário) são montados por js/app.js -->
+  <section class="sheet" id="chapters" aria-live="polite">
+    <div class="wrap">
+      <p class="loading" id="loading">Carregando conteúdos…</p>
+      <noscript><p class="loading">Este material precisa de JavaScript habilitado para carregar os conteúdos e os simulados.</p></noscript>
+    </div>
+  </section>
+
+  <section class="sheet" id="fontes">
+    <div class="wrap">
+      <div class="sources-card">
+        <h2>Fontes</h2>
+        <p>Este material foi elaborado a partir das aulas da disciplina de Qualidade de Software
+        (ADS — Senac), com o conteúdo reorganizado pedagogicamente por assunto. As questões e o
+        resumo teórico servem como apoio para estudo e revisão. As dissertativas não têm correção
+        automática — use o gabarito comentado para autoavaliação.</p>
+        <div class="toc toc-inline" id="sources-toc"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p>Material de estudo não oficial de Qualidade de Software — ADS Senac.</p>
+    <p class="footer-links">
+      <a href="#top">Voltar ao topo</a>
+      <a href="https://github.com/SenacOS/ADS-Simulado-QualidadeSoftware" target="_blank" rel="noopener">Repositório</a>
+      <span>Simulado hospedado no <a href="https://github.com/SenacOS" target="_blank" rel="noopener">SenacOS</a></span>
+    </p>
+  </div>
+</footer>
+
+<script src="js/theme.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+[
+  {
+    "type": "mc",
+    "q": "Segundo o material, por que a frase \"o sistema tem que ser rápido\" não é suficiente para orientar um teste?",
+    "options": [
+      "Porque a palavra \"rápido\" não existe no vocabulário da ISO/IEC 25010",
+      "Porque um teste precisa de condição inicial concreta, estímulo reproduzível, resultado esperado mensurável e critério binário de aprovação — e a frase não tem nenhum desses elementos",
+      "Porque apenas desenvolvedores seniores conseguem interpretar requisitos de performance",
+      "Porque performance não pode ser testada, apenas medida em produção"
+    ],
+    "correct": 1,
+    "explanation": "Duas pessoas podem concordar com a frase inteira e discordar completamente sobre o que ela significa. Um teste, por definição, precisa dos quatro elementos citados — e é isso que o ATAM ajuda a construir."
+  },
+  {
+    "type": "mc",
+    "q": "O ATAM (Architecture Tradeoff Analysis Method) foi criado por quem, e está documentado em qual relatório técnico?",
+    "options": [
+      "Barry Boehm, no relatório sobre o modelo de custo da qualidade",
+      "Rick Kazman, Mark Klein e Paul Clements, no SEI (Carnegie Mellon), consolidado no relatório CMU/SEI-2000-TR-004",
+      "A ISO, no documento ISO/IEC/IEEE 29119-3",
+      "A equipe de engenharia da NASA, após o acidente do Ariane 5"
+    ],
+    "correct": 1,
+    "explanation": "O método foi criado no SEI (Software Engineering Institute) da Carnegie Mellon e está consolidado no relatório técnico CMU/SEI-2000-TR-004."
+  },
+  {
+    "type": "mc",
+    "q": "Qual afirmação sobre o ATAM está correta?",
+    "options": [
+      "O ATAM prova que uma arquitetura está correta e produz medições precisas de desempenho",
+      "O ATAM é um método de identificação de riscos: o resultado é uma lista do que pode dar errado, não um selo de aprovação",
+      "O ATAM só pode ser aplicado depois que o sistema já está em produção",
+      "O ATAM substitui completamente a necessidade de testes automatizados"
+    ],
+    "correct": 1,
+    "explanation": "Um ponto que costuma ser mal entendido: o ATAM não prova que a arquitetura está correta. Ele identifica riscos e conflitos de decisão — é feito no papel, antes de o sistema estar construído."
+  },
+  {
+    "type": "mc",
+    "q": "O ATAM tem nove etapas, divididas em duas rodadas. O que caracteriza a segunda rodada?",
+    "options": [
+      "Ela é apenas burocracia, exigida por questões contratuais",
+      "Ela abre o processo para um grupo maior de stakeholders, porque o arquiteto sozinho não enxerga todos os cenários — quem opera de madrugada, quem atende suporte, quem responde pelo orçamento",
+      "Ela substitui integralmente a primeira rodada, que é descartada",
+      "Ela ocorre apenas se a primeira rodada identificar falhas críticas"
+    ],
+    "correct": 1,
+    "explanation": "A segunda rodada existe porque diferentes stakeholders enxergam cenários diferentes daqueles que o núcleo técnico e os tomadores de decisão veem na primeira rodada."
+  },
+  {
+    "type": "mc",
+    "q": "Na utility tree, qual é a ordem correta dos quatro níveis, da raiz até o nível mais concreto?",
+    "options": [
+      "Cenários → Refinamentos → Atributos → Utilidade",
+      "Utilidade (raiz) → Atributos (características da ISO/IEC 25010) → Refinamentos (recortes de cada atributo) → Folhas (cenários testáveis)",
+      "Atributos → Utilidade → Cenários → Refinamentos",
+      "Refinamentos → Cenários → Atributos → Utilidade"
+    ],
+    "correct": 1,
+    "explanation": "A árvore decompõe a palavra \"qualidade\" até chegar em algo concreto o suficiente para medir: da utilidade geral até as folhas, que são os cenários testáveis."
+  },
+  {
+    "type": "mc",
+    "q": "Cada folha da utility tree recebe um par de notas (I, D). O que esse par representa?",
+    "options": [
+      "Investimento e Duração — quanto custa e quanto tempo leva para implementar",
+      "Importância para o negócio e Dificuldade de alcançar, normalmente em escala Alta/Média/Baixa",
+      "Identificação e Data — um código único e a data de criação do cenário",
+      "Impacto e Denúncia — a gravidade do problema e quem o reportou"
+    ],
+    "correct": 1,
+    "explanation": "(I, D) é Importância para o negócio e Dificuldade de alcançar. Essa combinação orienta onde investir esforço de teste e arquitetura."
+  },
+  {
+    "type": "mc",
+    "q": "Um cenário recebeu nota (Alta, Alta) — importante e difícil. Qual é a recomendação do material?",
+    "options": [
+      "Ignorar esse cenário até que sobre tempo no cronograma",
+      "Testar primeiro, testar fundo, prototipar se necessário — é onde o projeto morre",
+      "Delegar a decisão inteiramente para a equipe de operações",
+      "Descartar o cenário, pois cenários difíceis raramente compensam o esforço"
+    ],
+    "correct": 1,
+    "explanation": "(A, A) é importante e difícil — é onde o projeto morre se não for bem tratado. Por isso deve ser testado primeiro e com profundidade."
+  },
+  {
+    "type": "mc",
+    "q": "Um cenário recebeu nota (Baixa, Alta) — pouco importante e muito difícil de alcançar. Qual é a recomendação?",
+    "options": [
+      "Testar com a mesma profundidade dos cenários (Alta, Alta)",
+      "Forte candidato a não fazer — antes de gastar esforço, questionar o próprio requisito",
+      "Priorizar acima de todos os outros cenários, pois a dificuldade indica risco técnico alto",
+      "Automatizar imediatamente, sem prototipagem prévia"
+    ],
+    "correct": 1,
+    "explanation": "(B, A) é pouco importante e difícil: é um forte candidato a não ser feito. Antes de investir esforço nele, vale questionar se o requisito de origem realmente se sustenta."
+  },
+  {
+    "type": "mc",
+    "q": "Quais são as seis partes de um cenário de atributo de qualidade bem formado?",
+    "options": [
+      "Fonte do estímulo, Estímulo, Ambiente, Artefato, Resposta, Medida da resposta",
+      "Ator, Pré-condição, Passos, Dados, Resultado, Evidência",
+      "Requisito, Prioridade, Severidade, Impacto, Responsável, Prazo",
+      "Entrada, Processamento, Saída, Validação, Log, Auditoria"
+    ],
+    "correct": 0,
+    "explanation": "Se faltar uma dessas seis partes, o cenário não é testável. A sexta — medida da resposta — é a que separa um requisito de um teste de verdade."
+  },
+  {
+    "type": "mc",
+    "q": "Qual das seis partes do cenário de atributo de qualidade é descrita no material como \"a que muda tudo\", pois sem ela não existe critério de passa/não passa?",
+    "options": [
+      "Fonte do estímulo",
+      "Ambiente",
+      "Medida da resposta — o número que define, em quanto tempo, com que taxa, dentro de que limite",
+      "Artefato"
+    ],
+    "correct": 2,
+    "explanation": "Sem número na medida da resposta, não existe critério de passa/não passa — existe apenas opinião. Essa é a parte que faz o cenário virar teste."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo de tradeoff apresentado (tempo de validade do token de sessão em cache), qual é o conflito entre segurança e performance?",
+    "options": [
+      "Cache longo é mais lento, mas mais seguro; cache curto é mais rápido, mas menos seguro",
+      "Cache longo é rápido, mas um acesso revogado continua funcionando por mais tempo; cache curto é seguro, mas cada chamada bate no serviço de autenticação",
+      "O tempo de cache não afeta nem segurança nem performance, apenas custo de infraestrutura",
+      "Cache longo sempre vence em ambos os atributos, tornando o cache curto desnecessário"
+    ],
+    "correct": 1,
+    "explanation": "O parâmetro sensível a ambos os atributos é o tempo de validade do token em cache. O ATAM não resolve esse tradeoff — obriga a equipe a decidir conscientemente e registrar a decisão."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a diferença entre um \"risco\" e um \"não-risco\" segundo o vocabulário do ATAM?",
+    "options": [
+      "Risco é sempre técnico; não-risco é sempre de negócio",
+      "Não-risco é uma decisão adequada desde que uma premissa continue verdadeira — e um não-risco cuja premissa não foi registrada é, na prática, um risco silencioso",
+      "Risco só existe em sistemas legados; não-risco só existe em sistemas novos",
+      "Não há diferença prática entre os dois termos no método"
+    ],
+    "correct": 1,
+    "explanation": "Exemplo do material: \"um cache de 5 minutos resolve, desde que o catálogo mude no máximo uma vez por dia\" é um não-risco — mas se essa premissa não for registrada, ela vira um risco silencioso esperando a premissa mudar."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a distinção correta entre ponto de sensibilidade e ponto de tradeoff?",
+    "options": [
+      "Todo ponto de sensibilidade é também ponto de tradeoff",
+      "Ponto de sensibilidade afeta fortemente um único atributo de qualidade; ponto de tradeoff é sensível a dois ou mais atributos ao mesmo tempo, de forma que melhorar um piora o outro",
+      "Ponto de tradeoff só existe em sistemas distribuídos",
+      "Ponto de sensibilidade é sempre mais crítico que ponto de tradeoff"
+    ],
+    "correct": 1,
+    "explanation": "Todo tradeoff é sensível, mas nem toda sensibilidade é tradeoff. O tamanho do pool de conexões, por exemplo, é sensibilidade pura se afeta só o tempo de resposta."
+  },
+  {
+    "type": "mc",
+    "q": "Quais são os sete campos obrigatórios de um caso de teste bem escrito, segundo o material?",
+    "options": [
+      "ID, Título, Pré-condições, Dados de entrada, Passos, Resultado esperado, Rastreabilidade",
+      "Nome, Autor, Data, Prioridade, Severidade, Status, Comentário",
+      "Ambiente, Ferramenta, Linguagem, Framework, Cobertura, Tempo, Responsável",
+      "Requisito, Cenário, Utility Tree, ATAM, (I,D), Tradeoff, Sensibilidade"
+    ],
+    "correct": 0,
+    "explanation": "O critério prático é simples: outra pessoa consegue executar seu caso de teste sem te perguntar nada? Os sete campos garantem isso — sem rastreabilidade, por exemplo, ninguém sabe se o teste ainda faz sentido quando o requisito muda."
+  },
+  {
+    "type": "mc",
+    "q": "\"A tela deve carregar rápido\" é citado como um erro clássico em casos de teste. Qual é esse erro?",
+    "options": [
+      "Dado vago",
+      "Resultado subjetivo — não é um resultado esperado, é uma sensação",
+      "Dependência de outro teste",
+      "Falta de rastreabilidade"
+    ],
+    "correct": 1,
+    "explanation": "Resultado esperado precisa ser objetivo e mensurável. \"Rápido\" é uma sensação, não um critério — o mesmo problema que motivou toda a discussão sobre cenários de qualidade."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a função da matriz de rastreabilidade, segundo o material?",
+    "options": [
+      "Substituir o plano de teste formal",
+      "Ligar cada cenário aos casos de teste que o cobrem, mostrando o buraco de cobertura antes que ele vire incidente",
+      "Servir apenas como documentação burocrática exigida por auditoria externa",
+      "Calcular automaticamente a severidade de cada defeito encontrado"
+    ],
+    "correct": 1,
+    "explanation": "A matriz não existe para burocracia: ela existe para responder, quando um requisito muda, o que precisa ser revisado — e para mostrar os buracos antes que virem incidentes em produção."
+  },
+  {
+    "type": "mc",
+    "q": "Qual norma vigente rege o plano de teste, substituindo a clássica IEEE 829?",
+    "options": [
+      "ISO/IEC 25010",
+      "ISO/IEC/IEEE 29119-3",
+      "IEEE 730",
+      "CMU/SEI-2000-TR-004"
+    ],
+    "correct": 1,
+    "explanation": "A norma vigente é a ISO/IEC/IEEE 29119-3, que respondeu escopo, critérios (entrada, saída, suspensão) e riscos e recursos, substituindo a clássica IEEE 829."
+  },
+  {
+    "type": "mc",
+    "q": "Por que o campo \"itens a não testar\" é descrito como \"o mais adulto do documento\" no plano de teste?",
+    "options": [
+      "Porque só times seniores têm permissão para preenchê-lo",
+      "Porque toda equipe deixa coisas de fora, e a diferença entre uma equipe profissional e uma amadora é transformar essa omissão em uma decisão registrada e assinada, em vez de escondê-la",
+      "Porque ele é o único campo obrigatório por lei em contratos de software",
+      "Porque ele elimina a necessidade dos demais campos do plano de teste"
+    ],
+    "correct": 1,
+    "explanation": "Toda equipe deixa coisas de fora. A equipe profissional registra e assina essa omissão como decisão consciente; a amadora simplesmente esconde o que não testou."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo do sistema de matrícula online, o cenário \"CEN-04 trocar gateway\" aparece na matriz de rastreabilidade com status \"sem cobertura\" e nenhum caso de teste associado. O que isso representa na prática?",
+    "options": [
+      "Um erro de digitação na matriz, sem consequência real",
+      "Um risco não testado e visível — exatamente o tipo de buraco que a matriz de rastreabilidade existe para expor antes que vire incidente",
+      "Uma decisão correta, já que gateways de pagamento nunca precisam ser testados",
+      "Uma evidência de que o cenário tem prioridade (Baixa, Baixa) e pode ser ignorado com segurança"
+    ],
+    "correct": 1,
+    "explanation": "A linha \"sem cobertura\" é todo o valor da matriz: ela mostra o buraco antes que ele vire incidente, permitindo decidir conscientemente se aquilo é aceitável ou precisa de atenção."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Transforme a frase vaga \"o sistema precisa ser seguro\" em um cenário de atributo de qualidade com as seis partes, inventando números defensáveis.",
+    "expected": "Uma resposta completa deve conter as seis partes: (1) Fonte do estímulo — ex.: um usuário mal-intencionado; (2) Estímulo — ex.: tentativa de acessar dados de outro usuário alterando um ID na URL; (3) Ambiente — ex.: operação normal, usuário autenticado; (4) Artefato — ex.: a API de consulta de pedidos; (5) Resposta — ex.: o sistema nega o acesso e registra a tentativa; (6) Medida da resposta — ex.: 100% das tentativas de acesso não autorizado são bloqueadas e registradas em log em até 1 segundo, com zero vazamento de dado de outro usuário. O importante é que a métrica seja numérica e verificável — sem isso, o cenário continua sendo intenção, não cenário."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Por que um não-risco mal documentado é mais perigoso do que um risco conhecido? Responda em até cinco linhas.",
+    "expected": "Um risco conhecido já está no radar da equipe — alguém sabe que ele existe e pode monitorá-lo ou mitigá-lo. Um não-risco mal documentado, por outro lado, foi avaliado como \"adequado\" sob uma premissa que ninguém registrou explicitamente. Quando essa premissa deixa de ser verdadeira (por exemplo, o catálogo passa a mudar várias vezes ao dia em vez de uma vez), ninguém percebe a mudança de status, porque a decisão original não foi rastreada como condicional. O não-risco se torna um risco silencioso, descoberto tarde — geralmente em produção."
+  }
+]

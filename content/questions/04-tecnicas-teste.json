@@ -1,0 +1,228 @@
+[
+  {
+    "type": "mc",
+    "q": "No teste caixa preta, a base do teste é a especificação, e o código é opaco por escolha. O que essa técnica tende a encontrar bem?",
+    "options": [
+      "Ramo de código nunca executado e código morto",
+      "Requisito mal implementado, regra de negócio errada, validação ausente, funcionalidade que simplesmente falta",
+      "Erros finos de lógica dentro de condições complexas",
+      "Condições impossíveis de serem satisfeitas no código-fonte"
+    ],
+    "correct": 1,
+    "explanation": "Caixa preta é o olhar de quem usa o sistema (e também de quem ataca). Ela acha bem problemas de comportamento em relação ao requisito, mas não acha caminhos de código que nenhum teste baseado em especificação chega a executar."
+  },
+  {
+    "type": "mc",
+    "q": "Por que o teste caixa branca é descrito como \"o mais fácil de se enganar\"?",
+    "options": [
+      "Porque exige ferramentas caras e pouco confiáveis",
+      "Porque quem escreve o código tende a testar o que implementou, não o que foi pedido — e por isso não encontra o requisito que ninguém escreveu, já que não existe linha para cobrir",
+      "Porque a cobertura de linha é sempre imprecisa tecnicamente",
+      "Porque só pode ser aplicado em linguagens compiladas"
+    ],
+    "correct": 1,
+    "explanation": "Caixa branca olha o fluxo de controle e pergunta por quais ramos ainda não passou — é bom para achar ramo nunca executado ou código morto, mas não acha um requisito ausente, pois não há linha correspondente a cobrir."
+  },
+  {
+    "type": "mc",
+    "q": "O teste caixa cinza, usado na maior parte do semestre no case Foot Fanatics, se caracteriza por:",
+    "options": [
+      "Nunca conhecer o contrato da API, apenas o código-fonte completo",
+      "Chamar pelo contrato, como um cliente externo, mas escolher os casos sabendo o que existe atrás — típico de teste de API",
+      "Ser aplicável apenas a testes de interface gráfica",
+      "Substituir completamente a necessidade de caixa branca e caixa preta"
+    ],
+    "correct": 1,
+    "explanation": "Caixa cinza combina a perspectiva de cliente externo (contrato) com o conhecimento do que existe por trás da API — é o modo predominante de teste de API no case do semestre."
+  },
+  {
+    "type": "mc",
+    "q": "Considerando o trecho `if (token != null && !token.expirado()) { liberarAcesso(); }`, quantos testes, no mínimo, o critério de cobertura de RAMO (decisão) exige?",
+    "options": [
+      "1 — apenas o caminho feliz",
+      "2 — a decisão avaliada como verdadeira e como falsa",
+      "3 — cada operando avaliado verdadeiro e falso isoladamente",
+      "4 — todas as combinações possíveis dos dois operandos"
+    ],
+    "correct": 1,
+    "explanation": "Cobertura de ramo exige que a decisão completa seja avaliada como verdadeira e como falsa — 2 testes mínimos, incluindo o caso que nega acesso."
+  },
+  {
+    "type": "mc",
+    "q": "No mesmo trecho de código, quantos testes o critério de cobertura de CONDIÇÃO exige, no mínimo, e por quê?",
+    "options": [
+      "1 teste, porque condição é o critério mais fraco entre os três",
+      "2 testes, o mesmo que o critério de ramo",
+      "3 testes, porque cada operando (token nulo, token expirado) precisa ser avaliado verdadeiro e falso isoladamente — são bugs distintos",
+      "Um número indefinido, porque condição não é um critério mensurável"
+    ],
+    "correct": 2,
+    "explanation": "Cobertura de condição exige testar cada operando isoladamente. Token nulo e token expirado são bugs distintos que a cobertura de ramo sozinha poderia não separar."
+  },
+  {
+    "type": "mc",
+    "q": "Qual afirmação sobre cobertura de testes está correta, segundo o material?",
+    "options": [
+      "Cobertura mede o que foi verificado por asserções corretas",
+      "Cobertura mede o que foi executado, não o que foi verificado — um teste sem asserção soma cobertura e não protege nada",
+      "Cobertura de condição é calculada automaticamente por qualquer ferramenta padrão de mercado",
+      "Cobertura deve ser usada como nota do projeto, não apenas como indicador"
+    ],
+    "correct": 1,
+    "explanation": "Use cobertura para descobrir o que falta testar — nunca como nota. Um teste sem assert é o exemplo clássico de número inflado sem proteção real."
+  },
+  {
+    "type": "mc",
+    "q": "A técnica de partição de equivalência, aplicada ao exemplo de planos \"free\", \"premium\" e \"pirata\" (inválido), consiste em:",
+    "options": [
+      "Testar todas as combinações possíveis de valores de entrada, sem exceção",
+      "Agrupar entradas tratadas do mesmo jeito em uma classe e testar apenas um representante de cada classe",
+      "Testar apenas os valores exatamente no limite entre classes válidas e inválidas",
+      "Ignorar entradas inválidas, testando apenas os casos de sucesso"
+    ],
+    "correct": 1,
+    "explanation": "Entradas tratadas do mesmo jeito formam uma classe de equivalência; testa-se um representante por classe — no exemplo, \"free\", \"premium\" e \"pirata\" representam três classes distintas."
+  },
+  {
+    "type": "mc",
+    "q": "Na análise de valor limite aplicada à expiração de sessão de 30 minutos (1800 segundos), quais são os três pontos testados?",
+    "options": [
+      "0, 900 e 1800 segundos",
+      "1799 (logo antes), 1800 (no limite) e 1801 (logo depois)",
+      "1800, 3600 e 5400 segundos",
+      "Apenas 1800 segundos, o valor exato do limite"
+    ],
+    "correct": 1,
+    "explanation": "O defeito mora na fronteira: testar logo antes, no limite exato e logo depois revela erros de < versus <= que passariam despercebidos com valores \"no meio\" da faixa válida."
+  },
+  {
+    "type": "mc",
+    "q": "Quando o material recomenda usar tabela de decisão como técnica de teste?",
+    "options": [
+      "Quando existe apenas uma condição simples a ser testada",
+      "Quando condições se combinam (ex.: logado? × assinante? × conteúdo pago?) e é preciso cobrir cada regra resultante",
+      "Apenas para testes de performance sob carga",
+      "Exclusivamente para testes de segurança de autenticação"
+    ],
+    "correct": 1,
+    "explanation": "Quando múltiplas condições se combinam, a tabela de decisão organiza sistematicamente todas as regras resultantes, evitando que combinações sejam esquecidas."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo `pode_assistir`, existe um `if (sessao.renovacoes > 3)` que não corresponde a nenhum requisito documentado. Qual técnica de teste tem mais chance de revelar essa linha?",
+    "options": [
+      "Caixa preta, porque testa exatamente o que está escrito no requisito",
+      "Caixa branca, porque olha o código e o relatório de cobertura denuncia a existência da linha não exercitada por nenhum teste baseado em especificação",
+      "Nenhuma das duas técnicas consegue encontrar esse tipo de código",
+      "Apenas testes de carga (stress test) revelam esse tipo de problema"
+    ],
+    "correct": 1,
+    "explanation": "Nenhum teste de caixa preta chega até essa linha, porque ela não está em nenhum requisito. Só o relatório de cobertura da caixa branca denuncia sua existência."
+  },
+  {
+    "type": "mc",
+    "q": "Ao executar o experimento de \"mutação na unha\" trocando `> LIMITE_SESSAO_S` por `>= LIMITE_SESSAO_S` no código de exemplo, qual caso de teste deveria falhar?",
+    "options": [
+      "Todos os casos de teste da suíte",
+      "Apenas o caso de 1800 segundos — exatamente o que a análise de valor limite foi desenhada para capturar",
+      "Nenhum caso deveria falhar, pois a mudança é equivalente",
+      "Apenas os casos relacionados a planos free e premium"
+    ],
+    "correct": 1,
+    "explanation": "Essa mutação é um erro clássico de off-by-one, e é exatamente o caso do limite (1800) que a análise de valor limite protege — se ele não falhar, o teste de fronteira não está funcionando."
+  },
+  {
+    "type": "mc",
+    "q": "Um teste que chama `pode_assistir` mas não contém nenhum `assert`: passa, soma cobertura, e não falha em nenhuma das mutações propostas. O que esse cenário representa?",
+    "options": [
+      "Um teste ideal, pois nunca falha e mantém o pipeline sempre verde",
+      "O defeito mais comum em projetos com meta de cobertura: teste que aumenta o número sem proteger nada",
+      "Um bug na ferramenta de cobertura, que deveria ser reportado",
+      "Um exemplo de caixa cinza bem aplicada"
+    ],
+    "correct": 1,
+    "explanation": "Regra da casa proposta no material: apague a regra de negócio, rode a suíte — se não ficar vermelha, aquele teste não está protegendo nada."
+  },
+  {
+    "type": "mc",
+    "q": "O que o comando `pytest --cov=acesso --cov-branch --cov-report=term-missing` adiciona à medição, em relação a rodar apenas `pytest --cov`?",
+    "options": [
+      "Passa a medir cobertura de condição automaticamente, sem esforço adicional",
+      "Passa a medir cobertura de ramo (decisão) além de linha, e lista no terminal exatamente quais linhas e ramos não foram executados",
+      "Executa os testes em paralelo, reduzindo o tempo total",
+      "Gera automaticamente novos casos de teste para as lacunas encontradas"
+    ],
+    "correct": 1,
+    "explanation": "`--cov-branch` acrescenta a medição de ramo; nenhuma ferramenta padrão mede cobertura de condição de graça — isso é decisão de projeto de teste, feita pela equipe."
+  },
+  {
+    "type": "mc",
+    "q": "Qual olhar sobre o software resume melhor a diferença central entre caixa preta e caixa branca?",
+    "options": [
+      "Caixa preta é sempre mais lenta de executar que caixa branca",
+      "Caixa preta é o olhar de quem usa (e também de quem ataca); caixa branca é o olhar de quem escreve",
+      "Caixa branca é usada apenas em testes manuais; caixa preta, apenas em testes automatizados",
+      "Não existe diferença de perspectiva, apenas de ferramentas usadas"
+    ],
+    "correct": 1,
+    "explanation": "Essa é a pergunta anterior a toda técnica de teste: você pode ver o código? A resposta muda o que você consegue enxergar — e o que continua invisível."
+  },
+  {
+    "type": "mc",
+    "q": "Voltando ao trecho `if (token != null && !token.expirado()) { liberarAcesso(); }`, quantos testes o critério de cobertura de COMANDO (linha) exige, no mínimo?",
+    "options": [
+      "1 — basta o caminho feliz, que executa a linha",
+      "2 — verdadeiro e falso",
+      "3 — cada operando isoladamente",
+      "0 — cobertura de linha não se aplica a estruturas condicionais"
+    ],
+    "correct": 0,
+    "explanation": "Cobertura de comando (linha) só exige que cada linha seja executada ao menos uma vez — é o critério mais fraco dos três, satisfeito apenas com o caminho feliz."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo o material, o que o teste caixa preta NÃO consegue encontrar, por definição?",
+    "options": [
+      "Uma regra de negócio implementada incorretamente",
+      "O caminho de código que nunca foi executado por nenhum teste baseado em especificação",
+      "Uma funcionalidade que está totalmente ausente do sistema",
+      "Uma validação de entrada que deveria existir e não existe"
+    ],
+    "correct": 1,
+    "explanation": "Caixa preta enxerga bem problemas de comportamento frente ao requisito, mas não tem visibilidade sobre caminhos de código que a especificação nunca menciona."
+  },
+  {
+    "type": "mc",
+    "q": "E o que o teste caixa branca NÃO consegue encontrar, mesmo com cobertura alta?",
+    "options": [
+      "Ramos de código nunca executados",
+      "Condições impossíveis de serem satisfeitas",
+      "O requisito que ninguém escreveu — não existe linha correspondente a cobrir",
+      "Código morto dentro de uma função"
+    ],
+    "correct": 2,
+    "explanation": "Caixa branca olha o código existente; um requisito que simplesmente nunca foi implementado não tem representação em nenhuma linha, então nenhuma cobertura consegue revelá-lo."
+  },
+  {
+    "type": "mc",
+    "q": "Na tabela de decisão do exemplo `test_matriz_de_acesso` (logado × assinante × premium), qual é o resultado esperado quando o usuário está logado, não é assinante, e o conteúdo é premium?",
+    "options": [
+      "LIBERADO, porque estar logado já é suficiente",
+      "ASSINATURA_NECESSARIA, porque o conteúdo é premium e o usuário não é assinante",
+      "SESSAO_INVALIDA, porque o usuário não está logado",
+      "PLANO_INVALIDO, porque o plano não foi reconhecido"
+    ],
+    "correct": 1,
+    "explanation": "A tabela de decisão cobre exatamente essa combinação: logado (True), assinante (False), premium (True) resulta em ASSINATURA_NECESSARIA — cada regra da combinação precisa de um caso de teste correspondente."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Considere uma regra de negócio: \"clientes com nota de crédito entre 300 e 850 são elegíveis para o plano premium; fora dessa faixa, são recusados\". Projete as classes de equivalência e os valores de limite que você testaria.",
+    "expected": "Classes de equivalência esperadas: (1) valores abaixo de 300 (inelegível), (2) valores entre 300 e 850 inclusive (elegível), (3) valores acima de 850 (inelegível) — three classes cobrindo todo o domínio. Valores de limite a testar: 299 e 300 (fronteira inferior), 850 e 851 (fronteira superior). Uma resposta completa deve explicar que testar apenas \"um valor no meio da faixa válida\" (ex.: 500) não seria suficiente, pois erros de < versus <= tendem a se manifestar exatamente nas fronteiras 300, 850 e seus vizinhos imediatos."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Explique, usando o conceito de mutação de código, por que \"cobertura alta\" não é sinônimo de \"proteção alta\".",
+    "expected": "Cobertura mede apenas se uma linha ou ramo foi executado durante a suíte, não se o comportamento correto foi verificado por uma asserção. A prova disso é o experimento de mutação: se você altera deliberadamente uma condição do código (por exemplo, trocando `>` por `>=`, ou substituindo uma condição por `if False:`) e a suíte continua toda verde, isso significa que, apesar da cobertura alta, nenhum teste realmente verificava aquele comportamento específico — ele apenas passava por ali. Um teste sem assert é o caso extremo: soma cobertura, nunca falha em nenhuma mutação, e por isso não protege nada, apesar do número parecer positivo em um relatório."
+  }
+]

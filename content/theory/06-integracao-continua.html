@@ -1,0 +1,146 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 06 · CI</span>
+  <h3 id="c6-title">Integração Contínua e Pipelines de Qualidade</h3>
+  <p>CI como prática de integração frequente, não sinônimo de ferramenta. Modelo do GitHub
+  Actions, o workflow mínimo em Java 21, cache, segurança, branch protection e diagnóstico
+  operacional de pipeline.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. O que é integração contínua?</h4>
+  <p>CI combina mudanças pequenas e frequentes na linha principal com uma verificação
+  automática confiável. O objetivo é reduzir o intervalo entre introduzir um problema e
+  descobri-lo. Quanto menor esse intervalo, menor o contexto necessário para corrigir.</p>
+  <p><strong>Comportamentos da equipe:</strong> branches curtas e pull requests pequenos;
+  build e testes executados localmente antes do push; main permanece executável e vermelho
+  recebe atenção imediata; falha não é contornada com reruns sucessivos ou checks
+  opcionais.</p>
+  <div class="callout callout-warn">
+    <p>Ter um arquivo YAML não produz CI se a equipe integra raramente, aceita pipeline
+    vermelho ou ignora o check para fazer merge.</p>
+  </div>
+
+  <h4>2. Modelo do GitHub Actions</h4>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Elemento</th><th>Responsabilidade</th></tr></thead>
+      <tbody>
+        <tr><td>Workflow</td><td>Processo versionado em <code>.github/workflows/*.yml</code></td></tr>
+        <tr><td>Evento</td><td>Disparo, como <code>pull_request</code> ou <code>push</code> em main</td></tr>
+        <tr><td>Job</td><td>Conjunto de passos em um runner; por padrão jobs são paralelos</td></tr>
+        <tr><td>Step</td><td>Action reutilizável ou comando de shell</td></tr>
+        <tr><td>Runner</td><td>Máquina limpa que executa o job</td></tr>
+        <tr><td>Artifact</td><td>Arquivo preservado após o job, como relatório de teste</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Jobs não compartilham filesystem. Use artifacts para evidência e <code>needs</code> para
+  dependência explícita.</p>
+
+  <h4>3. Workflow mínimo e atual</h4>
+  <pre><code>name: qualidade
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Obter código
+uses: actions/checkout@v6
+      - name: Configurar Java
+uses: actions/setup-java@v5
+with:
+  distribution: temurin
+  java-version: '21'
+  cache: maven
+      - name: Verificar
+run: ./mvnw -B verify</code></pre>
+
+  <h4>4. Por que o comando é verify?</h4>
+  <p>O Maven possui ciclo de vida. <code>test</code> executa a fase de testes unitários;
+  <code>verify</code> avança o ciclo e permite executar testes de integração e verificações
+  como cobertura. Assim o gate cresce nas próximas aulas sem trocar o contrato principal.</p>
+  <ul>
+    <li><code>./mvnw</code> fixa a versão do Maven usada pelo projeto.</li>
+    <li><code>-B</code> executa em modo batch, apropriado à automação.</li>
+    <li>O mesmo comando deve estar no README e funcionar localmente.</li>
+  </ul>
+  <div class="callout callout-bad"><p>Não use <code>-DskipTests</code> no job que decide a qualidade.</p></div>
+
+  <h4>5. Cache, concorrência e tempo de feedback</h4>
+  <p>Cache de dependências reduz download; não deve reaproveitar saída compilada de forma a
+  esconder problemas. A chave do cache do <code>setup-java</code> considera arquivos de
+  dependência. <code>concurrency</code> cancela execuções antigas da mesma referência,
+  liberando runners.</p>
+  <div class="chapter-grid cols-2">
+    <div class="card"><h5>Acelerar (legítimo)</h5><p>Testes determinísticos, cache de dependências, jobs independentes e mudanças menores.</p></div>
+    <div class="card"><h5>Não mascarar</h5><p><code>continue-on-error</code>, retry indiscriminado, exclusão silenciosa e workspace persistente.</p></div>
+  </div>
+
+  <h4>6. Preservar relatórios</h4>
+  <pre><code>- name: Publicar relatórios de teste
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: relatorios-${{ github.run_number }}
+    path: |
+      target/surefire-reports/
+      target/failsafe-reports/
+    if-no-files-found: warn
+    retention-days: 7</code></pre>
+  <p>O passo roda mesmo após falha e preserva resultado daquela execução. Retenção curta
+  reduz armazenamento; relatórios não devem conter tokens, payloads pessoais ou credenciais.</p>
+
+  <h4>7. Segurança do workflow</h4>
+  <ul>
+    <li><strong>Permissões mínimas</strong>: comece com <code>contents: read</code>, conceda escrita ao job específico.</li>
+    <li><strong>Segredos</strong>: use armazenamento de secrets, mas lembre que código não confiável pode tentar exfiltrá-los.</li>
+    <li><strong>Contribuições externas</strong>: evite executar código de fork com contexto privilegiado.</li>
+    <li><strong>Actions</strong>: use releases estáveis e revise mudanças; em contexto profissional, fixe SHA conforme política.</li>
+    <li><strong>Logs</strong>: não imprima contexto completo, variáveis ou tokens para "depurar".</li>
+  </ul>
+  <div class="callout callout-bad">
+    <span class="callout-label">Atenção a pull_request_target</span>
+    <p>O evento roda no contexto da base e pode ter acesso privilegiado. Não faça checkout e
+    execução ingênua de código não confiável.</p>
+  </div>
+
+  <h4>8. Branch protection e contrato de merge</h4>
+  <ol>
+    <li>Abra um pull request que execute o workflow.</li>
+    <li>Confirme o nome estável do check: <code>qualidade / test</code>.</li>
+    <li>Nas regras da branch, exija o check e revisão por par.</li>
+    <li>Se desejado, exija branch atualizada com a base.</li>
+  </ol>
+  <p>Não permita merge administrativo como rotina; exceções devem ser auditáveis. O pipeline
+  deixa de ser relatório e se torna controle preventivo. Se estiver lento ou instável,
+  corrija o pipeline; não enfraqueça a regra.</p>
+
+  <h4>9. Diagnóstico operacional</h4>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Sintoma</th><th>Investigação</th></tr></thead>
+      <tbody>
+        <tr><td>Passa local, falha na CI</td><td>Compare Java, comando, timezone, locale, filesystem e estado implícito.</td></tr>
+        <tr><td>Intermitente</td><td>Procure concorrência, relógio, ordem, portas e dependência externa.</td></tr>
+        <tr><td>Não dispara</td><td>Valide YAML, evento, branch e filtros de paths.</td></tr>
+        <tr><td>Cache não ajuda</td><td>Confira pom.xml, hit/miss e tempo real de download.</td></tr>
+        <tr><td>Artifact vazio</td><td>Confirme fase Maven, caminhos e if: always().</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout"><p>Rerun é experimento para confirmar flakiness. Ele não é correção nem deve desbloquear merge automaticamente.</p></div>
+</div>

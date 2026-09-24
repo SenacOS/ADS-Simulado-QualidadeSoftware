@@ -1,0 +1,187 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 02 · Do requisito ao teste</span>
+  <h3 id="c2-title">ATAM, Utility Tree e Cenários de Qualidade</h3>
+  <p>O método que atravessa a distância entre "o sistema tem que ser rápido" e um teste
+  executável: ATAM, utility tree, cenário de atributo de qualidade em seis partes, anatomia
+  do caso de teste e plano de teste.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. O buraco entre o requisito e o teste</h4>
+  <p>O vocabulário da ISO/IEC 25010 (performance, confiabilidade, manutenibilidade,
+  segurança) resolve metade do problema: permite <em>nomear</em> o que está em jogo. Mas
+  ainda não permite testar. "O sistema tem que ser rápido" não tem critério de passa/não
+  passa — duas pessoas podem concordar com a frase inteira e discordar completamente sobre
+  o que ela significa.</p>
+  <p>Um teste, por definição, precisa de quatro coisas: uma <strong>condição inicial
+  concreta</strong>, um <strong>estímulo reproduzível</strong>, um <strong>resultado
+  esperado mensurável</strong> e um <strong>critério binário de aprovação</strong>. O método
+  que atravessa do primeiro mundo para o segundo é o <strong>ATAM</strong>.</p>
+
+  <h4>2. O que é o ATAM</h4>
+  <p>ATAM significa <strong>Architecture Tradeoff Analysis Method</strong>. Foi criado no SEI
+  (Software Engineering Institute) da Carnegie Mellon por Rick Kazman, Mark Klein e Paul
+  Clements, consolidado no relatório técnico <code>CMU/SEI-2000-TR-004</code>. É um método
+  para avaliar uma arquitetura de software em relação aos seus atributos de qualidade, feito
+  no papel, antes de o sistema estar construído.</p>
+  <div class="callout callout-warn">
+    <span class="callout-label">O que o ATAM não faz</span>
+    <p>O ATAM não prova que a arquitetura está correta e não produz medições precisas. Ele é
+    um método de <strong>identificação de riscos</strong>. O resultado é uma lista do que
+    pode dar errado e onde as decisões estão em conflito — não um selo de aprovação.</p>
+  </div>
+  <p>O método roda em duas rodadas. A primeira, com o núcleo técnico e os tomadores de
+  decisão, cobre as etapas 1 a 6 (apresentar o método, os direcionadores de negócio, a
+  arquitetura, identificar abordagens, construir a utility tree, analisar abordagens à luz
+  dos cenários prioritários). A segunda rodada abre para um grupo maior de stakeholders
+  (etapas 7 a 9: levantar e priorizar cenários coletivamente, reanalisar, apresentar
+  resultados) — porque o arquiteto, sozinho, não enxerga todos os cenários: quem opera de
+  madrugada, quem atende suporte e quem responde pelo orçamento enxergam outros.</p>
+
+  <h4>3. Utility tree</h4>
+  <p>A árvore de utilidade decompõe a palavra "qualidade" até chegar em algo concreto o
+  suficiente para medir. Ela tem quatro níveis:</p>
+  <ol>
+    <li><strong>Raiz</strong> — "Utilidade", a qualidade geral do sistema.</li>
+    <li><strong>Atributos</strong> — exatamente as características da ISO/IEC 25010: performance, segurança, manutenibilidade…</li>
+    <li><strong>Refinamentos</strong> — recortes de cada atributo: dentro de performance, "tempo de resposta" e "throughput" são coisas diferentes.</li>
+    <li><strong>Folhas</strong> — os cenários. É aqui que a árvore vira algo testável.</li>
+  </ol>
+  <p>Cada folha recebe um par de notas <strong>(I, D)</strong> — Importância para o negócio e
+  Dificuldade de alcançar, normalmente em escala Alta/Média/Baixa.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <caption>Exemplo: sistema de matrícula online</caption>
+      <thead><tr><th>Atributo</th><th>Refinamento</th><th>Cenário (folha)</th><th>(I, D)</th></tr></thead>
+      <tbody>
+        <tr><td>Performance</td><td>Tempo de resposta</td><td>No pico da matrícula, com 2.000 alunos simultâneos, 95% das confirmações respondem em menos de 2 s.</td><td>(A, A)</td></tr>
+        <tr><td>Confiabilidade</td><td>Recuperação</td><td>Se o banco cair durante a matrícula, o sistema volta em até 5 min sem perder matrícula já confirmada.</td><td>(A, A)</td></tr>
+        <tr><td>Segurança</td><td>Confidencialidade</td><td>Um aluno autenticado que altere o ID na URL não consegue ver a matrícula de outro aluno.</td><td>(A, M)</td></tr>
+        <tr><td>Manutenibilidade</td><td>Modularidade</td><td>Trocar o gateway de pagamento afeta no máximo 1 módulo e leva menos de 5 dias.</td><td>(M, A)</td></tr>
+        <tr><td>Interação</td><td>Aprendizado</td><td>Um aluno novo conclui a matrícula sem ajuda em menos de 10 minutos.</td><td>(M, B)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Por que priorizar por (I, D):</strong> você nunca vai ter tempo de testar tudo
+  com a mesma profundidade.</p>
+  <div class="chapter-grid cols-2">
+    <div class="card"><h5>(A, A) — importante e difícil</h5><p>É onde o projeto morre. Teste primeiro, teste fundo, prototipe se necessário.</p></div>
+    <div class="card"><h5>(A, B) — importante e fácil</h5><p>Proteja com teste automatizado e siga em frente; é barato garantir.</p></div>
+    <div class="card"><h5>(B, A) — pouco importante e difícil</h5><p>Forte candidato a não fazer. Antes de gastar, questione o requisito.</p></div>
+    <div class="card"><h5>(B, B) — pouco importante e fácil</h5><p>Faça quando sobrar tempo; não estruture o projeto em volta disso.</p></div>
+  </div>
+
+  <h4>4. O cenário de atributo de qualidade</h4>
+  <p>Um cenário bem formado tem seis partes. Se faltar uma, ele não é testável:</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>#</th><th>Parte</th><th>Pergunta que responde</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Fonte do estímulo</td><td>Quem ou o que provoca? Usuário, outro sistema, falha de hardware.</td></tr>
+        <tr><td>2</td><td>Estímulo</td><td>O que exatamente chega ao sistema? Uma requisição, um pico, uma queda.</td></tr>
+        <tr><td>3</td><td>Ambiente</td><td>Em que condição o sistema está? Operação normal, pico, modo degradado.</td></tr>
+        <tr><td>4</td><td>Artefato</td><td>Que parte é atingida? A API, o banco, a tela, o sistema todo.</td></tr>
+        <tr><td>5</td><td>Resposta</td><td>O que o sistema deve fazer? Processar, rejeitar, registrar, recuperar.</td></tr>
+        <tr><td>6</td><td>Medida da resposta</td><td>O número. Em quanto tempo, com que taxa, dentro de que limite.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <span class="callout-label">A parte que muda tudo</span>
+    <p>É a medida da resposta que separa um requisito de um teste. Sem número, não existe
+    critério de passa/não passa — existe opinião.</p>
+  </div>
+  <p><strong>De vago para testável</strong> — partindo de "o sistema de matrícula tem que ser
+  rápido": fonte = 2.000 alunos simultâneos; estímulo = confirmam matrícula ao mesmo tempo;
+  ambiente = primeiro dia do período letivo, horário de pico; artefato = API de confirmação
+  de matrícula; resposta = processa e confirma a matrícula; medida da resposta = 95% em
+  menos de 2 s, nenhuma requisição acima de 5 s. Repare no ganho colateral: agora dá para
+  discordar do número — e essa conversa acontece antes de a arquitetura estar pronta, quando
+  mudar ainda é barato.</p>
+
+  <h4>5. O que o ATAM produz</h4>
+  <p>A análise gera quatro tipos de achado. Os dois últimos são os mais valiosos:</p>
+  <dl class="term-list">
+    <dt>Risco</dt>
+    <dd>Decisão arquitetural que pode levar a consequências indesejadas diante de um atributo
+    de qualidade. Ex.: "a sessão fica só na memória de um nó — se ele cair, o aluno perde a
+    matrícula em andamento."</dd>
+    <dt>Não-risco</dt>
+    <dd>Decisão adequada — desde que uma premissa continue verdadeira. Ex.: "um cache de 5
+    minutos resolve, desde que o catálogo mude no máximo uma vez por dia." Um não-risco cuja
+    premissa não foi registrada é um risco silencioso esperando a premissa mudar.</dd>
+    <dt>Ponto de sensibilidade</dt>
+    <dd>Propriedade que, ao mudar, move significativamente um atributo. Ex.: "o tamanho do
+    pool de conexões dita o tempo de resposta no pico."</dd>
+    <dt>Ponto de tradeoff</dt>
+    <dd>Propriedade sensível a dois ou mais atributos ao mesmo tempo: melhorar um piora o
+    outro. É o achado mais importante do método.</dd>
+  </dl>
+  <div class="callout callout-bad">
+    <span class="callout-label">Exemplo de tradeoff — segurança vs. performance</span>
+    <p>O parâmetro sensível aos dois é por quanto tempo o token de sessão fica válido em
+    cache. Cache longo: rápido, mas um acesso revogado continua funcionando por mais tempo.
+    Cache curto: seguro, mas cada chamada bate no serviço de autenticação. O ATAM não resolve
+    o tradeoff — obriga a equipe a decidir conscientemente e a registrar a decisão.</p>
+  </div>
+
+  <h4>6. Do cenário ao caso de teste</h4>
+  <p>Cada parte do cenário de qualidade já é, diretamente, uma parte do caso de teste:</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Cenário (ATAM)</th><th>Vira</th><th>O que você escreve</th></tr></thead>
+      <tbody>
+        <tr><td>Ambiente + Artefato</td><td>Pré-condições</td><td>Ambiente de carga no ar, API publicada, 2.000 contas de teste criadas</td></tr>
+        <tr><td>Fonte + Estímulo</td><td>Passos e dados de entrada</td><td>Disparar 2.000 confirmações simultâneas com JMeter</td></tr>
+        <tr><td>Resposta + Medida</td><td>Resultado esperado</td><td>p95 &lt; 2 s, máximo &lt; 5 s, 0 matrículas perdidas</td></tr>
+        <tr><td>Prioridade (I, D)</td><td>Prioridade do teste</td><td>(A, A) → teste crítico, roda em todo pipeline</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Quem constrói a utility tree com cuidado já escreveu metade do plano de teste sem
+  perceber — por isso essa base vem antes de qualquer técnica específica de teste.</p>
+
+  <h4>7. Anatomia de um caso de teste</h4>
+  <p>O critério prático é simples: <strong>outra pessoa consegue executar seu caso de teste
+  sem te perguntar nada?</strong> Se não, ele está incompleto. Campos obrigatórios: ID,
+  Título, Pré-condições, Dados de entrada (concretos — "um CPF válido" não serve;
+  "111.444.777-35" serve), Passos numerados e reproduzíveis, Resultado esperado objetivo e
+  mensurável, e Rastreabilidade até o requisito ou cenário de origem.</p>
+  <div class="callout callout-warn">
+    <span class="callout-label">Cinco erros clássicos</span>
+    <p><strong>Resultado subjetivo</strong> — "a tela deve carregar rápido" é sensação, não
+    resultado. <strong>Depender de outro teste</strong> — se o teste 7 só passa depois do 6,
+    você tem um teste só, mais frágil. <strong>Dado vago</strong> — "um usuário qualquer" não
+    é reproduzível. <strong>Verificar cinco coisas de uma vez</strong> — quando falhar, você
+    não sabe qual quebrou. <strong>Sem rastreabilidade</strong> — o requisito muda e ninguém
+    sabe se o teste ainda faz sentido.</p>
+  </div>
+
+  <h4>8. Rastreabilidade e plano de teste</h4>
+  <p>A matriz de rastreabilidade liga cada cenário aos casos de teste que o cobrem. Ela não
+  existe para burocracia: existe para responder, quando um requisito muda, o que precisa ser
+  revisado — e para mostrar os buracos.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Cenário</th><th>Atributo</th><th>(I, D)</th><th>Casos de teste</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>CEN-01 pico de matrícula</td><td>Performance</td><td>(A, A)</td><td>CT-014, CT-015, CT-016</td><td>coberto</td></tr>
+        <tr><td>CEN-02 queda do banco</td><td>Confiabilidade</td><td>(A, A)</td><td>CT-021</td><td>parcial</td></tr>
+        <tr><td>CEN-03 acesso a matrícula alheia</td><td>Segurança</td><td>(A, M)</td><td>CT-030, CT-031</td><td>coberto</td></tr>
+        <tr><td>CEN-04 trocar gateway</td><td>Manutenibilidade</td><td>(M, A)</td><td>—</td><td>sem cobertura</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>A linha vermelha é todo o valor da matriz: ela mostra o buraco antes que ele vire
+  incidente. O <strong>plano de teste</strong> segue a norma vigente
+  <strong>ISO/IEC/IEEE 29119-3</strong>, que substituiu a clássica IEEE 829, e responde:
+  Escopo (itens a testar, a não testar, níveis envolvidos); Critérios (entrada, saída,
+  suspensão); Riscos e recursos (produto, projeto, ambiente, dados, ferramentas,
+  responsáveis, prazos).</p>
+  <div class="callout">
+    <span class="callout-label">O campo mais "adulto" do documento</span>
+    <p>Toda equipe deixa coisas de fora do escopo de teste. A diferença entre uma equipe
+    profissional e uma amadora é que a primeira transforma essa omissão em uma decisão
+    registrada e assinada.</p>
+  </div>
+</div>

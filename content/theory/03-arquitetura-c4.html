@@ -1,0 +1,200 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 03 · Arquitetura</span>
+  <h3 id="c3-title">Arquitetura para Qualidade: C4, Fato/Suposição e Táticas de Bass</h3>
+  <p>Por que qualidade de software depende de arquitetura, como disciplinar fato, lacuna,
+  suposição e decisão, o modelo C4 em quatro níveis, e como aplicar ATAM e táticas de Len
+  Bass a um pipeline real com fluxo online e batch.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. Por que uma disciplina de qualidade fala de arquitetura</h4>
+  <p>A maior parte dos atributos de qualidade <strong>não se testa para dentro depois</strong>.
+  Você consegue acrescentar um teste; não consegue acrescentar disponibilidade,
+  modificabilidade ou privacidade a um sistema que foi estruturado contra elas. Um defeito
+  de código custa uma correção; uma fronteira errada custa uma reescrita.</p>
+  <div class="callout">
+    <span class="callout-label">A frase que resume esta aula</span>
+    <p><strong>Arquitetura é hipótese.</strong> Requisitos orientam a hipótese, cenários a
+    pressionam, evidências a sustentam. O ATAM é o método que faz essa pressão de forma
+    organizada — antes de a decisão virar código e ficar cara de mudar.</p>
+  </div>
+
+  <h4>2. Fato, lacuna, suposição e decisão</h4>
+  <p>Quando uma IA entra na conversa de arquitetura, o risco não é ela errar — é ela
+  <strong>preencher lacuna com texto convincente</strong>. A defesa é classificar cada
+  afirmação antes de usá-la.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Categoria</th><th>Definição operacional</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td>Fato</td><td>Está declarado num artefato do repositório e pode ser citado com caminho e identificador.</td><td>"RF-07: o token expira em 30 min" — está em docs/prd.md.</td></tr>
+        <tr><td>Lacuna</td><td>Informação necessária para decidir que não existe em lugar nenhum.</td><td>Quantos assinantes simultâneos no horário de jogo? Ninguém escreveu.</td></tr>
+        <tr><td>Suposição</td><td>Hipótese assumida explicitamente, com justificativa e impacto caso esteja errada.</td><td>"Assumimos até 500 sessões simultâneas; se for 5.000, o cache não serve."</td></tr>
+        <tr><td>Decisão</td><td>Escolha justificada por requisito, atributo ou restrição — e rastreável até ele.</td><td>"Token opaco em vez de JWT, para permitir revogação imediata (RNF-03)."</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="chapter-grid cols-2">
+    <div class="card">
+      <h5>❌ Como não escrever</h5>
+      <p>"O sistema deve responder em menos de 200 ms, como é padrão em APIs de conteúdo."
+      Problema: o número não veio de artefato nenhum. Vira "fato" por repetição, e ninguém
+      mais o questiona.</p>
+    </div>
+    <div class="card">
+      <h5>✔ Como escrever</h5>
+      <p>"Suposição S-02: p95 &lt; 200 ms na listagem. Origem: hipótese da equipe, sem
+      respaldo nos artefatos. Validação pendente. Se a meta real for 1 s, a decisão de cache
+      perde justificativa." Qualquer pessoa consegue contestar.</p>
+    </div>
+  </div>
+  <p><strong>Regra prática:</strong> toda decisão aponta para um requisito, atributo ou
+  restrição. Se não houver origem, ela não é apagada — ela é marcada: "decisão sem requisito
+  correspondente". Marcar é honesto; inventar a origem é dívida técnica disfarçada.</p>
+
+  <h4>3. C4: quatro níveis, quatro perguntas</h4>
+  <p>C4 conta a história do sistema em níveis de zoom. Cada nível responde uma pergunta;
+  misturar as perguntas é o erro mais comum em diagrama de equipe iniciante.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Nível</th><th>Pergunta-guia</th><th>Entra</th><th>Não entra</th></tr></thead>
+      <tbody>
+        <tr><td>1 · Contexto</td><td>Qual problema, para quem, com quais vizinhos?</td><td>Personas, sistemas externos, fronteira do produto</td><td>Tecnologia, banco de dados, fila</td></tr>
+        <tr><td>2 · Contêineres</td><td>Onde as coisas executam e onde os dados persistem?</td><td>Aplicações, APIs, jobs, bancos, storage</td><td>Classes, métodos, nomes de arquivo</td></tr>
+        <tr><td>3 · Componentes</td><td>Quem faz o quê dentro de um contêiner?</td><td>Responsabilidades internas e suas interfaces</td><td>Detalhe de implementação de cada uma</td></tr>
+        <tr><td>4 · Código</td><td>Quais tipos e contratos realizariam isso?</td><td>Um recorte demonstrativo, quando ajuda</td><td>O código-fonte de verdade</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-warn">
+    <span class="callout-label">Erro clássico</span>
+    <p>Desenhar o nível 2 com nomes de classe, ou o nível 1 com o banco de dados no meio. Se
+    o diagrama responde a duas perguntas ao mesmo tempo, ele não responde bem a nenhuma.</p>
+  </div>
+
+  <h4>4. Dois ritmos, uma arquitetura</h4>
+  <p>Uma restrição comum em sistemas com machine learning ou dados: existe um cron job que
+  roda todo dia, ao final do dia, e treina ou retreina usando somente dados novos. Isso cria
+  dois fluxos com naturezas opostas dentro do mesmo sistema.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Fluxo</th><th>Responsabilidade</th><th>Qualidades críticas</th></tr></thead>
+      <tbody>
+        <tr><td>Online</td><td>Receber a interação, consultar o modelo vigente e responder agora.</td><td>Latência, disponibilidade, segurança, privacidade.</td></tr>
+        <tr><td>Batch diário</td><td>No fim do dia, selecionar só o que é novo, treinar, validar e versionar um candidato.</td><td>Idempotência, recuperação, observabilidade, reprodutibilidade, custo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>As três invariantes que a arquitetura precisa respeitar:</strong></p>
+  <ol>
+    <li>O batch não indisponibiliza o online — nem por competição de recurso, nem por lock de tabela.</li>
+    <li>O checkpoint não avança antes do sucesso — senão os dados do intervalo somem em silêncio.</li>
+    <li>Nenhum candidato é promovido automaticamente sem passar por gate de comparação com o modelo vigente.</li>
+  </ol>
+
+  <h4>5. O cron diário destrinchado</h4>
+  <p>Não decore os nomes: entenda a falha que cada controle evita. Na análise ATAM, cada
+  linha desta tabela vira pelo menos um cenário.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Controle</th><th>O que faz</th><th>O que acontece se faltar</th></tr></thead>
+      <tbody>
+        <tr><td>Watermark / checkpoint</td><td>Marca até onde já foi processado, definindo o que é "novo".</td><td>Ou reprocessa tudo (custo), ou perde registros do intervalo (silencioso e grave).</td></tr>
+        <tr><td>Atualização atômica do checkpoint</td><td>Avança só depois do sucesso, de uma vez.</td><td>Falha no meio deixa o marcador adiantado: dados daquele intervalo nunca mais entram no treino.</td></tr>
+        <tr><td>Idempotência</td><td>Reexecutar o mesmo intervalo não duplica efeito.</td><td>O retry vira duplicação de dados, e o modelo aprende com peso errado.</td></tr>
+        <tr><td>Lock</td><td>Impede duas execuções concorrentes do mesmo job.</td><td>Duas execuções escrevem o mesmo checkpoint e corrompem o estado.</td></tr>
+        <tr><td>Retry com classificação</td><td>Distingue falha transitória (repetir) de permanente (parar e alertar).</td><td>Ou desiste do que era rede instável, ou insiste eternamente em erro de esquema.</td></tr>
+        <tr><td>Validação de qualidade</td><td>Bloqueia dado inválido, fora de esquema ou degradado.</td><td>Lixo entra no treino; o modelo piora sem nenhum alarme disparar.</td></tr>
+        <tr><td>Reprodutibilidade</td><td>Registra dados, parâmetros e versão de código de cada execução.</td><td>Um resultado ruim não pode ser investigado nem refeito.</td></tr>
+        <tr><td>Registry / versionamento</td><td>Guarda os candidatos e aponta qual é o modelo ativo.</td><td>Não existe "voltar para a versão de ontem".</td></tr>
+        <tr><td>Gates de promoção</td><td>Compara candidato e baseline segundo critério declarado.</td><td>Um modelo pior entra em produção por ser mais recente.</td></tr>
+        <tr><td>Rollback</td><td>Restaura a última versão estável rapidamente.</td><td>O incidente dura o tempo de um novo treino — horas, não minutos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Atravessando tudo: <strong>segurança e LGPD</strong> (minimização, retenção, controle de
+  acesso, descarte) e <strong>custo</strong> (janela de execução, computação, armazenamento).
+  Esses dois não são seções separadas do documento — são perguntas feitas a cada decisão.</p>
+
+  <h4>6. ATAM aplicado ao pipeline</h4>
+  <p>O mesmo ATAM visto no Conteúdo 02 se aplica aqui, com foco nos cenários do pipeline.
+  Exemplo de cenário forte versus fraco:</p>
+  <div class="chapter-grid cols-2">
+    <div class="card">
+      <h5>❌ Cenário fraco</h5>
+      <p>"O sistema deve ser resiliente a falhas no processamento noturno." Não dá para
+      verificar. Falta ambiente, artefato e, sobretudo, métrica.</p>
+    </div>
+    <div class="card">
+      <h5>✔ Cenário forte</h5>
+      <p>"Quando o job noturno falha após o treino e antes da promoção, com o online em
+      operação, o pipeline preserva o modelo ativo, mantém o checkpoint anterior e retoma na
+      execução seguinte sem duplicar registros — verificável em uma execução, com zero
+      duplicatas."</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <caption>Utility tree do pipeline — exemplo</caption>
+      <thead><tr><th>Atributo</th><th>Refinamento</th><th>Cenário (resumido)</th><th>Imp. × Dif.</th></tr></thead>
+      <tbody>
+        <tr><td>Disponibilidade</td><td>Isolamento batch/online</td><td>Treino noturno em execução; consultas de conteúdo continuam dentro do p95 acordado.</td><td>Alta × Alta</td></tr>
+        <tr><td>Integridade de dados</td><td>Falha parcial</td><td>Falha após o treino: modelo ativo preservado e checkpoint intacto.</td><td>Alta × Alta</td></tr>
+        <tr><td>Segurança / LGPD</td><td>Minimização</td><td>Dado pessoal não necessário ao treino não sai da base de origem.</td><td>Alta × Média</td></tr>
+        <tr><td>Custo</td><td>Janela de execução</td><td>Treino cabe na janela noturna sem escalar máquina extra.</td><td>Média × Média</td></tr>
+        <tr><td>Modificabilidade</td><td>Troca de modelo</td><td>Trocar o algoritmo afeta um componente e nenhum contrato externo.</td><td>Média × Baixa</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Distinção que costuma cair:</strong> sensibilidade é sobre um atributo; tradeoff
+  é quando a mesma decisão puxa dois atributos em direções opostas. Todo tradeoff é
+  sensível — nem toda sensibilidade é tradeoff.</p>
+
+  <h4>7. Táticas de Len Bass</h4>
+  <p>Uma <strong>tática</strong> é uma decisão de projeto que influencia a resposta do
+  sistema a um estímulo, mirando um atributo de qualidade. Descrever a decisão pela tática, e
+  não pela ferramenta, é o que torna a análise discutível.</p>
+  <div class="chapter-grid cols-2">
+    <div class="card">
+      <h5>❌ Descrição pela implementação</h5>
+      <p>"Usamos Redis." Não dá para avaliar: qual atributo isso serve? Que custo impõe? Como
+      se verifica?</p>
+    </div>
+    <div class="card">
+      <h5>✔ Descrição pela intenção</h5>
+      <p>"Mantemos múltiplas cópias de dados (tática de desempenho/disponibilidade) para
+      reduzir latência de leitura do catálogo." Agora dá: o custo é consistência eventual; a
+      evidência é o p95 medido.</p>
+    </div>
+  </div>
+  <p><strong>Da decisão à evidência, em cinco campos:</strong> Decisão (o que foi escolhido);
+  Tática de Bass nomeada; Cenário atendido; Métrica de verificação; Trade-off assumido.</p>
+  <div class="callout">
+    <span class="callout-label">Regra da aula</span>
+    <p>Decisão sem tática nomeada é decisão sem justificativa; tática sem cenário associado é
+    otimização especulativa.</p>
+  </div>
+
+  <h4>8. IA agêntica: especialização e confronto</h4>
+  <p>Um único agente de IA concorda com o que ele mesmo propôs. A saída é distribuir papéis e
+  fazer com que eles se contestem, com uma pessoa arbitrando:</p>
+  <div class="chapter-grid cols-3">
+    <div class="card"><h5>Analista</h5><p>Extrai drivers dos artefatos reais e separa fato de suposição.</p></div>
+    <div class="card"><h5>Arquiteto</h5><p>Estrutura o C4, define fronteiras e interfaces.</p></div>
+    <div class="card"><h5>Dados / ML</h5><p>Pressiona o pipeline: watermark, gates, reprodutibilidade.</p></div>
+    <div class="card"><h5>Segurança / LGPD</h5><p>Procura exposição, retenção indevida e acesso amplo demais.</p></div>
+    <div class="card"><h5>Operações / SRE</h5><p>Testa falha, recuperação, alerta e rollback.</p></div>
+    <div class="card"><h5>Custos e facilitador ATAM</h5><p>Questiona sustentabilidade e consolida cenários e descobertas.</p></div>
+  </div>
+  <div class="callout callout-bad">
+    <span class="callout-label">O que a IA costuma errar aqui</span>
+    <p>Inventar números (SLA, volume, crescimento) sem artefato de origem. Escolher tecnologia
+    por popularidade, sem requisito que a justifique. Concordar com o próprio texto na
+    revisão cruzada. Transformar suposição em fato entre uma resposta e outra. Diagrama e
+    texto divergentes. Cenário sem métrica ("deve ser rápido e confiável" com outras
+    palavras).</p>
+  </div>
+  <p><strong>Governança:</strong> agentes analisam, propõem e confrontam. Não têm autoridade
+  para criar requisito, encerrar divergência nem aceitar risco. Isso é das pessoas — e fica
+  registrado com nome e motivo.</p>
+</div>

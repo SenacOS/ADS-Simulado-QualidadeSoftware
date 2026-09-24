@@ -1,0 +1,194 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 07 · Avançado</span>
+  <h3 id="c7-title">Testes Avançados: JUnit, Cobertura (JaCoCo) e Análise Estática (SonarCloud)</h3>
+  <p>JUnit Jupiter com intenção, relógio determinístico, o que a cobertura realmente mede,
+  configuração de gate com JaCoCo, e como o SonarCloud e o Quality Gate entram no pull
+  request.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. Cenário de qualidade — E2 (Sessão e Acesso)</h4>
+  <p><strong>Regra crítica:</strong> token expirado nunca libera acesso, mesmo quando a
+  assinatura está ativa. Token ausente, inválido ou revogado também é negado. Somente token
+  válido e não expirado permite continuar para as demais decisões de autorização.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Entrada</th><th>Decisão</th><th>Motivo estável</th></tr></thead>
+      <tbody>
+        <tr><td>Ausente</td><td>Negar</td><td>TOKEN_AUSENTE</td></tr>
+        <tr><td>Assinatura inválida</td><td>Negar</td><td>TOKEN_INVALIDO</td></tr>
+        <tr><td>Expiração ≤ agora</td><td>Negar</td><td>TOKEN_EXPIRADO</td></tr>
+        <tr><td>Revogado</td><td>Negar</td><td>TOKEN_REVOGADO</td></tr>
+        <tr><td>Válido e vigente</td><td>Prosseguir</td><td>sem negação</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>2. JUnit Jupiter com intenção</h4>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Recurso</th><th>Quando usar</th><th>Cuidado</th></tr></thead>
+      <tbody>
+        <tr><td><code>@Test</code></td><td>Um comportamento específico</td><td>Nome precisa revelar contexto e resultado</td></tr>
+        <tr><td><code>@BeforeEach</code></td><td>Contexto mínimo comum</td><td>Setup grande esconde dados relevantes</td></tr>
+        <tr><td><code>@Nested</code></td><td>Agrupar contextos, como token expirado</td><td>Não criar hierarquia sem ganho de leitura</td></tr>
+        <tr><td><code>@ParameterizedTest</code></td><td>Equivalências, tabelas e limites</td><td>Cada linha deve ser um caso compreensível</td></tr>
+        <tr><td><code>assertAll</code></td><td>Propriedades do mesmo resultado</td><td>Não agrupar comportamentos independentes</td></tr>
+        <tr><td><code>assertThrows</code></td><td>Exceção é parte do contrato</td><td>Verifique tipo/código, não texto volátil</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>3. Organização por contexto</h4>
+  <pre><code>class AutorizadorSessaoTest {
+  private final Instant agora = Instant.parse("2026-09-21T10:00:00Z");
+
+  @Nested
+  @DisplayName("quando o token está expirado")
+  class TokenExpirado {
+    @Test
+    void negaMesmoComAssinaturaAtiva() {
+      var token = tokenComExpiracao(agora.minusSeconds(1));
+      var decisao = autorizador.avaliar(token, assinaturaAtiva(), agora);
+      assertAll(
+() -&gt; assertFalse(decisao.permitido()),
+() -&gt; assertEquals(TOKEN_EXPIRADO, decisao.motivo())
+      );
+    }
+  }
+}</code></pre>
+  <p>O instante é dado explícito. A assinatura ativa existe justamente para provar a
+  precedência da expiração do token.</p>
+
+  <h4>4. Teste parametrizado de limite</h4>
+  <pre><code>@ParameterizedTest(name = "expira em {0}s → válido? {1}")
+@CsvSource({ "-1, false", "0, false", "1, true" })
+void respeitaLimite(long deslocamento, boolean esperado) {
+  var agora = Instant.parse("2026-09-21T10:00:00Z");
+  var token = tokenComExpiracao(agora.plusSeconds(deslocamento));
+  assertEquals(esperado, validador.estaValido(token, agora));
+}</code></pre>
+  <p>A trinca imediatamente antes / no limite / imediatamente depois captura erros de
+  <code>&lt;</code> versus <code>&lt;=</code>. Use <code>@ValueSource</code> para uma
+  entrada, <code>@CsvSource</code> para pequena tabela e <code>@MethodSource</code> para
+  objetos de domínio.</p>
+
+  <h4>5. Relógio determinístico</h4>
+  <p>Chamar <code>Instant.now()</code> dentro da regra prende o domínio ao ambiente. Injete
+  <code>Clock</code> ou passe o instante como argumento.</p>
+  <pre><code>public final class ValidadorToken {
+  private final Clock clock;
+  public ValidadorToken(Clock clock) { this.clock = clock; }
+  public boolean estaValido(Token token) {
+    return token.expiraEm().isAfter(Instant.now(clock));
+  }
+}
+
+var clock = Clock.fixed(
+    Instant.parse("2026-09-21T10:00:00Z"), ZoneOffset.UTC);</code></pre>
+  <p>Produção injeta <code>Clock.systemUTC()</code>. Testes injetam <code>Clock.fixed</code>.
+  Não há espera, corrida ou dependência de timezone local.</p>
+
+  <h4>6. O que a cobertura mede</h4>
+  <ul>
+    <li><strong>Instruções/linhas</strong>: quais unidades executáveis foram alcançadas.</li>
+    <li><strong>Branches</strong>: quantos resultados de decisões foram executados.</li>
+    <li><strong>Complexidade</strong>: aproxima caminhos independentes e ajuda a encontrar
+    regra difícil de testar.</li>
+  </ul>
+  <div class="callout callout-warn">
+    <p>Cobertura é condição necessária de observação, não prova de assert correto. Um teste
+    que executa o ramo e não verifica sua decisão aumenta cobertura sem reduzir risco.
+    <strong>Antiobjetivo</strong>: escrever testes triviais de getters ou excluir classes
+    relevantes apenas para atingir o percentual.</p>
+  </div>
+
+  <h4>7. Configuração JaCoCo</h4>
+  <p>Na release estável 0.8.15: <code>prepare-agent</code> instrumenta a execução;
+  <code>report</code> gera HTML/XML; <code>check</code> interrompe verify abaixo das metas.</p>
+  <pre><code>&lt;plugin&gt;
+  &lt;groupId&gt;org.jacoco&lt;/groupId&gt;
+  &lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;0.8.15&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;goals&gt;&lt;goal&gt;prepare-agent&lt;/goal&gt;&lt;/goals&gt;
+    &lt;/execution&gt;
+    &lt;execution&gt;
+      &lt;id&gt;report-and-check&lt;/id&gt;
+      &lt;phase&gt;verify&lt;/phase&gt;
+      &lt;goals&gt;&lt;goal&gt;report&lt;/goal&gt;&lt;goal&gt;check&lt;/goal&gt;&lt;/goals&gt;
+      &lt;configuration&gt;
+&lt;rules&gt;&lt;rule&gt;
+  &lt;element&gt;BUNDLE&lt;/element&gt;
+  &lt;limits&gt;
+    &lt;limit&gt;&lt;counter&gt;LINE&lt;/counter&gt;&lt;value&gt;COVEREDRATIO&lt;/value&gt;&lt;minimum&gt;0.80&lt;/minimum&gt;&lt;/limit&gt;
+    &lt;limit&gt;&lt;counter&gt;BRANCH&lt;/counter&gt;&lt;value&gt;COVEREDRATIO&lt;/value&gt;&lt;minimum&gt;0.70&lt;/minimum&gt;&lt;/limit&gt;
+  &lt;/limits&gt;
+&lt;/rule&gt;&lt;/rules&gt;
+      &lt;/configuration&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+  <div class="callout callout-bad"><p>Não configure Surefire com <code>forkCount=0</code>:
+  isso impede o javaagent do JaCoCo de registrar cobertura.</p></div>
+
+  <h4>8. Ler e usar o relatório</h4>
+  <p>Execute <code>./mvnw verify</code> e abra <code>target/site/jacoco/index.html</code>.
+  Navegue de pacote para classe e linha.</p>
+  <ul>
+    <li>Comece pelas regras de autorização e sessão, não pelo percentual total.</li>
+    <li>Linha vermelha: avalie risco, código morto ou cenário ausente.</li>
+    <li>Branch amarela: identifique o resultado não executado.</li>
+    <li>Leia o teste correspondente: há assert que prova o oráculo?</li>
+    <li>Atualize a RTM com o caso de teste, não com uma promessa genérica de cobertura.</li>
+  </ul>
+  <p>A meta global 80/70 é piso. Classes críticas podem justificar um critério mais alto e
+  específico.</p>
+
+  <h4>9. SonarCloud / SonarQube Cloud</h4>
+  <p>A análise estática procura padrões de bugs, vulnerabilidades, riscos de manutenibilidade,
+  duplicação e outros problemas sem executar o sistema. Ela complementa testes dinâmicos.</p>
+  <p><strong>Onboarding seguro:</strong></p>
+  <ol>
+    <li>Importe o repositório e selecione análise baseada em CI para o projeto Maven.</li>
+    <li>Configure <code>sonar.organization</code> e <code>sonar.projectKey</code> no <code>pom.xml</code>.</li>
+    <li>Crie <code>SONAR_TOKEN</code> nos GitHub Actions secrets; nunca passe valor literal.</li>
+    <li>Defina "novo código" e revise o Quality Gate.</li>
+    <li>Confirme decoração no pull request e check exigível.</li>
+  </ol>
+  <div class="callout callout-warn"><p>Não mantenha análise automática e análise pela CI ao
+  mesmo tempo sem intenção: resultados duplicados confundem diagnóstico.</p></div>
+
+  <h4>10. Pipeline de análise</h4>
+  <pre><code>- uses: actions/checkout@v6
+  with:
+    fetch-depth: 0
+- uses: actions/setup-java@v5
+  with:
+    distribution: temurin
+    java-version: '21'
+    cache: maven
+- name: Testar e analisar
+  env:
+    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  run: ./mvnw -B verify \
+       org.sonarsource.scanner.maven:sonar-maven-plugin:sonar</code></pre>
+  <p>O scanner Maven lê o relatório XML do JaCoCo produzido no build.
+  <code>fetch-depth: 0</code> fornece histórico para análise mais relevante. Pull requests
+  de forks podem não receber secrets; planeje o workflow sem expor token.</p>
+  <p><strong>Quality Gate:</strong> responde se o novo código pode ser integrado segundo
+  condições acordadas; não é uma nota absoluta de arquitetura.</p>
+
+  <h4>11. Estratégia de Quality Gate</h4>
+  <p>Trate legado e novo código de forma diferente. O projeto tem metas globais de 80% de
+  linhas e 70% de branches; o novo código não deve piorar segurança ou manutenibilidade.</p>
+  <ul>
+    <li>Nenhum bug ou vulnerabilidade crítica nova.</li>
+    <li>Cobertura suficiente no novo código, especialmente regras E2.</li>
+    <li>Duplicação controlada no novo código.</li>
+    <li>Issues revisadas: corrigir, aceitar com justificativa ou marcar falso positivo com evidência.</li>
+  </ul>
+  <div class="callout callout-bad"><p>Não marque issue como falso positivo para "ficar
+  verde" sem compreender o fluxo. O gate só tem valor se a decisão for confiável.</p></div>
+</div>

@@ -1,0 +1,128 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 05 · Defeitos</span>
+  <h3 id="c5-title">Gestão de Defeitos: Do Relato à Causa Raiz</h3>
+  <p>Defeitos não são apenas itens de backlog: são sinais sobre o sistema de
+  desenvolvimento. Vocabulário causal, relato reproduzível, severidade × prioridade,
+  triagem, causa raiz e fluxo de correção seguro.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. Vocabulário causal</h4>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Termo</th><th>Significado</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td>Erro humano</td><td>Ação/decisão equivocada</td><td>Interpretar e-mail como sensível a maiúsculas</td></tr>
+        <tr><td>Defeito</td><td>Problema em artefato</td><td>Comparação sem normalização</td></tr>
+        <tr><td>Falha</td><td>Comportamento incorreto executado</td><td>Duas contas equivalentes são criadas</td></tr>
+        <tr><td>Incidente</td><td>Evento percebido e investigado</td><td>Usuário relata login inconsistente</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Um defeito pode permanecer latente; uma falha depende de condições que o ativam.
+  Diferenciar os termos evita "corrigir" o relato sem investigar o mecanismo.</p>
+
+  <h4>2. Anatomia de um relato reproduzível</h4>
+  <ul>
+    <li><strong>Título</strong>: ação + condição + resultado observado.</li>
+    <li><strong>Contexto</strong>: versão/commit, ambiente, perfil e dados não sensíveis.</li>
+    <li><strong>Pré-condições</strong>: estado necessário antes de executar.</li>
+    <li><strong>Passos mínimos</strong>: numerados, sem ações irrelevantes.</li>
+    <li><strong>Esperado e obtido</strong>: lado a lado, ligados ao requisito.</li>
+    <li><strong>Evidência</strong>: resposta sanitizada, log com correlação, vídeo curto ou teste.</li>
+    <li><strong>Frequência, alcance e impacto</strong>: quantificáveis quando possível.</li>
+  </ul>
+  <div class="callout callout-bad">
+    <span class="callout-label">Proteção de dados</span>
+    <p>Nunca anexe senha, token, credencial, matrícula ou dado pessoal real. Use contas e
+    payloads sintéticos; remova segredos de logs.</p>
+  </div>
+
+  <h4>3. Exemplo completo</h4>
+  <div class="card">
+    <h5>Cadastro aceita e-mail duplicado com caixa e espaços diferentes</h5>
+    <p><span class="chip">Severidade alta</span><span class="chip">Prioridade P1</span><span class="chip">E1</span></p>
+    <p><strong>Ambiente:</strong> branch main, commit identificado, perfil anônimo.<br>
+    <strong>Pré-condição:</strong> conta ana.teste@example.invalid existente.<br>
+    <strong>Passos:</strong> enviar cadastro com ANA.TESTE@EXAMPLE.INVALID.<br>
+    <strong>Obtido:</strong> HTTP 201 e nova conta.<br>
+    <strong>Esperado:</strong> HTTP 409, código CONTA_EMAIL_DUPLICADO, nenhuma gravação.</p>
+  </div>
+  <p>O domínio <code>.invalid</code> é reservado para exemplos e evita confundir o material
+  com dados reais.</p>
+
+  <h4>4. Severidade e prioridade</h4>
+  <p><strong>Severidade</strong> mede dano: confidencialidade, integridade, disponibilidade,
+  fluxo bloqueado e alcance. <strong>Prioridade</strong> é uma decisão de negócio/planejamento:
+  urgência, compromisso, exposição, contorno e custo de atraso.</p>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th></th><th>Baixa prioridade</th><th>Alta prioridade</th></tr></thead>
+      <tbody>
+        <tr><td>Baixa severidade</td><td>Desalinhamento em tela administrativa rara</td><td>Grafia errada na campanha que começa hoje</td></tr>
+        <tr><td>Alta severidade</td><td>Falha crítica em recurso desligado e ainda não exposto</td><td>Conteúdo premium liberado para plano free</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>A classificação deve conter justificativa. Rótulo sem contexto vira disputa de opinião.</p>
+
+  <h4>5. Triagem e ciclo de vida</h4>
+  <p>Triagem confirma o fato, remove duplicidade, classifica impacto, decide prioridade,
+  identifica responsável e explicita o próximo passo. Produto, QA e desenvolvimento trazem
+  perspectivas complementares.</p>
+  <p>
+    <span class="chip">Novo</span> →
+    <span class="chip">Triado</span> →
+    <span class="chip">Em correção</span> →
+    <span class="chip">Em verificação</span> →
+    <span class="chip">Fechado</span>
+  </p>
+  <ul>
+    <li><strong>Duplicado</strong>: vincule ao issue canônico.</li>
+    <li><strong>Não reproduzível</strong>: liste o que falta; não encerre silenciosamente.</li>
+    <li><strong>Não será corrigido</strong>: registre risco aceito e quem decidiu.</li>
+    <li><strong>Reaberto</strong>: a evidência contradiz a correção; preserve histórico.</li>
+  </ul>
+  <p>Quem desenvolve pode marcar "em verificação"; o fechamento exige comprovação no
+  ambiente/versão definidos.</p>
+
+  <h4>6. Causa raiz e 5 porquês</h4>
+  <p>Os 5 porquês não exigem exatamente cinco perguntas. A técnica força a equipe a
+  atravessar o sintoma e chegar a uma condição controlável.</p>
+  <ol>
+    <li>Duas contas foram criadas porque a busca tratou os e-mails como diferentes.</li>
+    <li>A busca tratou diferente porque não houve normalização.</li>
+    <li>A normalização estava apenas no controller e não no domínio.</li>
+    <li>A invariante não estava explícita no modelo nem no banco.</li>
+    <li>O caso de equivalência não apareceu na análise nem na RTM.</li>
+  </ol>
+  <p><strong>Ações em camadas:</strong> normalização centralizada em tipo-valor Email;
+  restrição única coerente na persistência; teste unitário de equivalência e teste de
+  integração da restrição; RTM e checklist de revisão atualizados.</p>
+
+  <h4>7. Fluxo de correção seguro</h4>
+  <ol>
+    <li><strong>Reproduzir</strong>: transformar o relato em teste que falha no commit problemático.</li>
+    <li><strong>Localizar</strong>: reduzir hipótese com log, depuração e leitura do fluxo.</li>
+    <li><strong>Corrigir</strong>: preferir a menor mudança que remove a causa.</li>
+    <li><strong>Regredir</strong>: executar teste novo e suíte completa.</li>
+    <li><strong>Verificar</strong>: aplicar o critério de aceite no ambiente acordado.</li>
+    <li><strong>Aprender</strong>: atualizar RTM, documentação ou processo.</li>
+  </ol>
+  <p><strong>Fechamento:</strong> issue vinculada ao commit/PR, teste de regressão
+  identificável e resultado verde reproduzível.</p>
+
+  <h4>8. Métricas úteis e armadilhas</h4>
+  <ul>
+    <li>Tempo de ciclo por severidade</li>
+    <li>Taxa de reabertura</li>
+    <li>Defeitos escapados por etapa</li>
+    <li>Recorrência por causa</li>
+    <li>Idade do backlog crítico</li>
+  </ul>
+  <div class="callout callout-bad">
+    <span class="callout-label">Não use</span>
+    <p>Quantidade de bugs por pessoa como produtividade. Isso incentiva fragmentar, esconder
+    ou disputar classificação e destrói colaboração.</p>
+  </div>
+</div>

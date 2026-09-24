@@ -1,0 +1,132 @@
+<div class="chapter-head">
+  <span class="chapter-tag">Conteúdo 04 · Técnica</span>
+  <h3 id="c4-title">Técnicas de Projeto de Teste: Caixa Preta, Branca, Cinza e Cobertura</h3>
+  <p>Caixa preta, caixa branca, caixa cinza, critérios de cobertura e as técnicas clássicas
+  de projeto de teste — partição de equivalência, valor limite e tabela de decisão —
+  demonstradas com código Python/pytest.</p>
+</div>
+<div class="chapter-body">
+
+  <h4>1. Com que olhos você olha o software</h4>
+  <p>Toda técnica de teste responde a uma pergunta anterior: <strong>você pode ver o
+  código?</strong> A resposta muda o que você consegue enxergar — e o que continua
+  invisível.</p>
+  <div class="chapter-grid cols-3">
+    <div class="card">
+      <h5>Caixa preta</h5>
+      <p>Base: a especificação. Você conhece entradas, saídas e regras de negócio; o código é
+      opaco por escolha. É o olhar de quem usa — e também de quem ataca.</p>
+      <p><strong>Acha bem:</strong> requisito mal implementado, regra errada, validação
+      ausente, funcionalidade faltando.<br><strong>Não acha:</strong> o caminho de código que
+      nenhum teste executa.</p>
+    </div>
+    <div class="card">
+      <h5>Caixa branca</h5>
+      <p>Base: o código. Você olha o fluxo de controle e pergunta por quais ramos ainda não
+      passou. É o olhar de quem escreve — o mais fácil de se enganar: você tende a testar o
+      que implementou, não o que foi pedido.</p>
+      <p><strong>Acha bem:</strong> ramo nunca executado, código morto, condição impossível.
+      <br><strong>Não acha:</strong> o requisito que ninguém escreveu — não há linha para
+      cobrir.</p>
+    </div>
+    <div class="card">
+      <h5>Caixa cinza</h5>
+      <p>Praticada em teste de API: você chama pelo contrato, como um cliente externo, mas
+      escolhe os casos sabendo o que existe atrás. É o modo predominante de teste de API na
+      maior parte do semestre.</p>
+    </div>
+  </div>
+
+  <h4>2. Critérios de cobertura</h4>
+  <p>O mesmo trecho de código, medido por três réguas diferentes:</p>
+  <pre><code>if (token != null &amp;&amp; !token.expirado()) { liberarAcesso(); }</code></pre>
+  <div class="table-wrap">
+    <table class="compare-table">
+      <thead><tr><th>Critério</th><th>Exige</th><th>Testes mínimos</th></tr></thead>
+      <tbody>
+        <tr><td>Comando (linha)</td><td>Cada linha executada ao menos uma vez</td><td>1 — só o caminho feliz</td></tr>
+        <tr><td>Ramo (decisão)</td><td>A decisão avaliada como verdadeira e como falsa</td><td>2 — inclui o caso que nega acesso</td></tr>
+        <tr><td>Condição</td><td>Cada operando avaliado V e F isoladamente</td><td>3 — token nulo e token expirado são bugs distintos</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-warn">
+    <span class="callout-label">Cobertura mede execução, não verificação</span>
+    <p>Um teste sem asserção soma cobertura e não protege nada. Use cobertura para descobrir
+    o que falta testar — nunca como nota.</p>
+  </div>
+
+  <h4>3. Técnicas de projeto de teste em caixa preta</h4>
+  <ul>
+    <li><strong>Partição de equivalência</strong> — entradas tratadas do mesmo jeito formam
+    uma classe; teste uma por classe. Ex.: plano free, premium, inválido.</li>
+    <li><strong>Análise de valor limite</strong> — o defeito mora na fronteira; teste no
+    limite, logo antes e logo depois. Ex.: sessão de 30 min em 29:59, 30:00 e 30:01.</li>
+    <li><strong>Tabela de decisão</strong> — quando condições se combinam, monte a tabela e
+    cubra cada regra. Ex.: logado? × assinante? × conteúdo pago?</li>
+  </ul>
+
+  <h4>4. As técnicas em código: acesso.py e test_acesso.py</h4>
+  <p>A regra sob teste:</p>
+  <pre><code>PLANOS = ("free", "premium")
+LIMITE_SESSAO_S = 1800  # 30 minutos
+
+def pode_assistir(sessao, conteudo):
+    if sessao is None or sessao.idade_s &gt; LIMITE_SESSAO_S:
+return "SESSAO_INVALIDA"
+    if sessao.plano not in PLANOS:
+return "PLANO_INVALIDO"
+    if conteudo.premium and sessao.plano != "premium":
+return "ASSINATURA_NECESSARIA"
+    if sessao.renovacoes &gt; 3:
+return "SESSAO_INVALIDA"
+    return "LIBERADO"</code></pre>
+  <div class="callout callout-bad">
+    <span class="callout-label">Repare no último if</span>
+    <p>Ele não está em nenhum requisito. Nenhum teste de caixa preta chega até ele — só o
+    relatório de cobertura denuncia sua existência. Achar código assim é exatamente o que a
+    caixa branca faz bem.</p>
+  </div>
+  <p>As três técnicas aplicadas com <code>pytest.mark.parametrize</code>:</p>
+  <pre><code># 1. Particao de equivalencia
+@pytest.mark.parametrize("plano, esperado", [
+    ("free",    "ASSINATURA_NECESSARIA"),
+    ("premium", "LIBERADO"),
+    ("pirata",  "PLANO_INVALIDO"),
+])
+
+# 2. Analise de valor limite
+@pytest.mark.parametrize("idade_s, esperado", [
+    (1799, "LIBERADO"),
+    (1800, "LIBERADO"),
+    (1801, "SESSAO_INVALIDA"),
+])
+
+# 3. Tabela de decisao (logado, assinante, premium, esperado)
+REGRAS = [
+    (False, False, False, "SESSAO_INVALIDA"),
+    (True,  False, False, "LIBERADO"),
+    (True,  False, True,  "ASSINATURA_NECESSARIA"),
+    (True,  True,  True,  "LIBERADO"),
+]</code></pre>
+  <p>Medição: <code>pytest --cov=acesso --cov-branch --cov-report=term-missing</code>. O
+  <code>--cov-branch</code> acrescenta a medição de ramo; nenhuma ferramenta padrão mede
+  cobertura de condição de graça — é decisão de projeto de teste da equipe.</p>
+
+  <h4>5. Provar que o teste protege: mutação na unha</h4>
+  <p>Cobertura alta não significa proteção. O experimento, um de cada vez:</p>
+  <ol>
+    <li>Trocar <code>&gt; LIMITE_SESSAO_S</code> por <code>&gt;= LIMITE_SESSAO_S</code>. Deve
+    falhar apenas o caso 1800 — é a análise de valor limite fazendo o trabalho dela.</li>
+    <li>Trocar a condição de conteúdo premium por <code>if False:</code>. Deve falhar o caso
+    free + premium.</li>
+    <li>Escrever um teste que chama <code>pode_assistir</code> e não tem nenhum
+    <code>assert</code>. Ele passa, soma cobertura e não falha em nenhuma das mutações
+    acima — o defeito mais comum em projeto com meta de cobertura.</li>
+  </ol>
+  <div class="callout">
+    <span class="callout-label">Regra da casa</span>
+    <p>Apague a regra, rode a suíte. Se não ficar vermelha, aquele teste não está protegendo
+    nada.</p>
+  </div>
+</div>

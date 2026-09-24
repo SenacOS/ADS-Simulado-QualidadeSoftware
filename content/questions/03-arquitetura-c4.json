@@ -1,0 +1,228 @@
+[
+  {
+    "type": "mc",
+    "q": "Por que uma disciplina de Qualidade de Software dedica uma aula inteira à arquitetura?",
+    "options": [
+      "Porque arquitetura é um pré-requisito burocrático exigido pela ISO/IEC 25010",
+      "Porque a maior parte dos atributos de qualidade não se testa para dentro depois: você acrescenta um teste, mas não acrescenta disponibilidade, modificabilidade ou privacidade a um sistema estruturado contra elas",
+      "Porque arquitetura é sinônimo de escolha de tecnologia, e isso deve ser decidido antes de qualquer requisito",
+      "Porque testes automatizados só funcionam se a arquitetura for baseada em microsserviços"
+    ],
+    "correct": 1,
+    "explanation": "Um defeito de código custa uma correção; uma fronteira arquitetural errada custa uma reescrita. Por isso a frase-síntese da aula é: arquitetura é hipótese, pressionada por cenários e sustentada por evidências."
+  },
+  {
+    "type": "mc",
+    "q": "No framework Fato/Lacuna/Suposição/Decisão, qual é a definição operacional de \"Suposição\"?",
+    "options": [
+      "Informação necessária para decidir que não existe em lugar nenhum",
+      "Hipótese assumida explicitamente, com justificativa e impacto registrado caso esteja errada",
+      "Escolha justificada por requisito, atributo ou restrição, e rastreável até ele",
+      "Algo declarado num artefato do repositório, citável por caminho e identificador"
+    ],
+    "correct": 1,
+    "explanation": "Suposição é hipótese assumida com justificativa e impacto explícitos (ex.: \"assumimos até 500 sessões simultâneas; se for 5.000, a decisão de cache não serve\") — diferente de Fato (documentado) e Lacuna (informação ausente)."
+  },
+  {
+    "type": "mc",
+    "q": "\"O sistema deve responder em menos de 200 ms, como é padrão em APIs de conteúdo\" é apontado como um exemplo de como NÃO escrever. Qual é o problema dessa frase?",
+    "options": [
+      "200 ms é um valor tecnicamente impossível de alcançar",
+      "O número não veio de nenhum artefato — ele vira \"fato\" por repetição, e ninguém mais o questiona depois",
+      "APIs de conteúdo não têm requisitos de performance",
+      "A frase deveria estar em inglês para ser válida como requisito técnico"
+    ],
+    "correct": 1,
+    "explanation": "A forma correta seria marcar como suposição, com origem explícita (\"hipótese da equipe, sem respaldo nos artefatos\") e validação pendente — permitindo que qualquer pessoa a conteste."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a regra prática do material para decisões arquiteturais sem origem identificada em requisito, atributo ou restrição?",
+    "options": [
+      "A decisão deve ser apagada imediatamente do documento",
+      "A decisão não é apagada — ela é marcada explicitamente como \"decisão sem requisito correspondente\"; inventar a origem é dívida técnica disfarçada",
+      "A decisão deve ser aprovada automaticamente pelo arquiteto sênior",
+      "A decisão deve ser reescrita para parecer que veio de um requisito existente"
+    ],
+    "correct": 1,
+    "explanation": "Marcar é honesto; inventar a origem é dívida técnica disfarçada. Essa regra vale tanto para decisões humanas quanto — especialmente — para decisões sugeridas por IA."
+  },
+  {
+    "type": "mc",
+    "q": "No modelo C4, qual pergunta-guia corresponde ao Nível 1 (Contexto)?",
+    "options": [
+      "Onde as coisas executam e onde os dados persistem?",
+      "Qual problema, para quem, com quais vizinhos?",
+      "Quem faz o quê dentro de um contêiner?",
+      "Quais tipos e contratos realizariam isso?"
+    ],
+    "correct": 1,
+    "explanation": "O Nível 1 traz personas, sistemas externos e a fronteira do produto — sem nenhuma tecnologia, que seria ruído nesse nível de zoom."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é o erro clássico de diagrama C4 mencionado no material?",
+    "options": [
+      "Usar cores diferentes para cada contêiner do sistema",
+      "Desenhar o nível 2 (contêineres) com nomes de classe, ou o nível 1 (contexto) com o banco de dados no meio — misturando as perguntas de níveis diferentes",
+      "Não incluir personas em nenhum dos quatro níveis",
+      "Usar a ferramenta Mermaid em vez de desenho manual"
+    ],
+    "correct": 1,
+    "explanation": "Se o diagrama responde a duas perguntas ao mesmo tempo, ele não responde bem a nenhuma — e a discussão da equipe trava em detalhe irrelevante para aquele nível de zoom."
+  },
+  {
+    "type": "mc",
+    "q": "O material descreve dois \"ritmos\" arquiteturais em um sistema com pipeline de treinamento diário. Quais são as qualidades críticas de cada um?",
+    "options": [
+      "Online: idempotência e reprodutibilidade; Batch: latência e disponibilidade",
+      "Online: latência, disponibilidade, segurança e privacidade; Batch: idempotência, recuperação, observabilidade, reprodutibilidade e custo",
+      "Ambos os ritmos têm exatamente as mesmas qualidades críticas",
+      "Online: custo e escalabilidade; Batch: segurança e privacidade"
+    ],
+    "correct": 1,
+    "explanation": "O fluxo online responde à interação agora; o batch diário processa apenas dados novos. Por isso cada um pressiona atributos de qualidade diferentes."
+  },
+  {
+    "type": "mc",
+    "q": "Quais são as três invariantes que a arquitetura do pipeline diário precisa respeitar, segundo o material?",
+    "options": [
+      "O batch deve rodar mais rápido que o online; o checkpoint deve ser reiniciado a cada execução; todo candidato deve ser promovido automaticamente",
+      "O batch não pode indisponibilizar o online; o checkpoint não pode avançar antes do sucesso; nenhum candidato pode ser promovido automaticamente sem gate de comparação",
+      "O sistema deve rodar em nuvem pública; os dados devem ser criptografados; o custo mensal não pode ultrapassar um teto fixo",
+      "O pipeline deve rodar apenas uma vez por semana; o online deve ficar indisponível durante o treino; todo modelo deve ser versionado manualmente"
+    ],
+    "correct": 1,
+    "explanation": "Essas três invariantes atravessam toda a análise arquitetural do case: competição de recurso, avanço prematuro de checkpoint e promoção sem gate são os riscos centrais do pipeline batch."
+  },
+  {
+    "type": "mc",
+    "q": "No checklist de dez controles do cron diário, o que acontece se o controle de \"lock\" estiver ausente, mesmo havendo idempotência implementada?",
+    "options": [
+      "Nada, porque idempotência já resolve o problema de execuções concorrentes",
+      "Duas execuções concorrentes podem escrever o mesmo checkpoint e corromper o estado — idempotência não resolve isso, são problemas diferentes",
+      "O sistema simplesmente roda duas vezes mais rápido, sem efeito colateral",
+      "O lock é redundante e pode ser removido com segurança em qualquer cenário"
+    ],
+    "correct": 1,
+    "explanation": "Idempotência garante que reexecutar o mesmo intervalo não duplica efeito; lock impede que duas execuções concorrentes rodem ao mesmo tempo. São controles complementares, não substituíveis."
+  },
+  {
+    "type": "mc",
+    "q": "O que acontece se o controle \"gate de promoção\" estiver ausente no pipeline de treinamento?",
+    "options": [
+      "O sistema nunca treina um novo modelo",
+      "Um modelo pior pode entrar em produção apenas por ser mais recente",
+      "O checkpoint avança automaticamente sem necessidade de sucesso",
+      "Os dados de treino ficam permanentemente indisponíveis"
+    ],
+    "correct": 1,
+    "explanation": "O gate de promoção compara candidato e baseline segundo um critério declarado. Sem ele, não existe barreira entre \"mais novo\" e \"melhor\" — um modelo pior pode ser promovido."
+  },
+  {
+    "type": "mc",
+    "q": "Qual é a diferença entre descrever uma decisão arquitetural \"pela implementação\" e \"pela intenção\" (tática de Len Bass)?",
+    "options": [
+      "Não há diferença prática — as duas formas de descrição são equivalentes",
+      "\"Usamos Redis\" não permite avaliar qual atributo é servido, nem o custo; \"mantemos múltiplas cópias de dados (tática de desempenho/disponibilidade) para reduzir latência\" já expõe custo e evidência de verificação",
+      "Descrever pela implementação é sempre mais preciso tecnicamente",
+      "Descrever pela intenção só é possível depois que o sistema está em produção"
+    ],
+    "correct": 1,
+    "explanation": "Descrever a decisão pela tática, e não pela ferramenta, é o que torna a análise discutível: dá para nomear o atributo servido, o custo imposto e a forma de verificação."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo \"da decisão à evidência\" (publicar modelo por troca de ponteiro no registry), qual é o trade-off registrado?",
+    "options": [
+      "Não existe trade-off: a decisão só traz benefícios",
+      "Custo de armazenamento das versões retidas e disciplina de limpeza (retenção)",
+      "Perda de disponibilidade do serviço online durante a troca de ponteiro",
+      "Impossibilidade de fazer rollback em caso de degradação"
+    ],
+    "correct": 1,
+    "explanation": "A tática de disponibilidade (preparação e reparo, mantendo a versão anterior íntegra) tem como custo o armazenamento das versões retidas — por isso a decisão precisa de disciplina de retenção."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo o material, qual é a regra da aula sobre decisão e tática arquitetural?",
+    "options": [
+      "Toda tática precisa de aprovação do time de segurança antes de ser registrada",
+      "Decisão sem tática nomeada é decisão sem justificativa; tática sem cenário associado é otimização especulativa",
+      "Táticas só se aplicam a sistemas distribuídos em nuvem",
+      "Uma decisão pode ter no máximo uma tática associada"
+    ],
+    "correct": 1,
+    "explanation": "Essa regra fecha o ciclo decisão → tática → cenário → evidência, garantindo que nenhuma decisão fique sem justificativa nem nenhuma tática fique solta sem cenário que a sustente."
+  },
+  {
+    "type": "mc",
+    "q": "Dentre os papéis de IA agêntica descritos (analista, arquiteto, dados/ML, segurança/LGPD, operações/SRE, custos e facilitador ATAM), qual é a responsabilidade do papel \"Analista\"?",
+    "options": [
+      "Estruturar o C4, definir fronteiras e interfaces",
+      "Extrair drivers dos artefatos reais e separar fato de suposição",
+      "Testar falha, recuperação, alerta e rollback",
+      "Questionar sustentabilidade e consolidar cenários e descobertas"
+    ],
+    "correct": 1,
+    "explanation": "O Analista trabalha na base factual: extrai drivers dos artefatos e evita que suposições sejam tratadas como fatos — a distribuição de papéis existe justamente para que os agentes se contestem."
+  },
+  {
+    "type": "mc",
+    "q": "Qual dos itens abaixo é apontado como um erro comum que a IA costuma cometer nesse tipo de análise arquitetural?",
+    "options": [
+      "Ser excessivamente conservadora e nunca propor nenhuma tecnologia",
+      "Inventar números (SLA, volume, percentual de crescimento) sem que estejam em nenhum artefato, tratando-os como fato",
+      "Recusar-se a gerar qualquer diagrama Mermaid",
+      "Exigir revisão humana em excesso, atrasando o cronograma"
+    ],
+    "correct": 1,
+    "explanation": "Outros erros citados: escolher tecnologia por popularidade sem requisito que a justifique, concordar com o próprio texto na revisão cruzada, e transformar suposição em fato entre uma resposta e outra."
+  },
+  {
+    "type": "mc",
+    "q": "Segundo o material, o que a governança da IA agêntica explicitamente NÃO permite que os agentes façam?",
+    "options": [
+      "Analisar artefatos e propor alternativas",
+      "Criar requisito, encerrar divergência entre papéis ou aceitar risco — isso é das pessoas, e fica registrado com nome e motivo",
+      "Gerar diagramas Mermaid de qualquer nível C4",
+      "Sugerir táticas arquiteturais de Len Bass"
+    ],
+    "correct": 1,
+    "explanation": "Agentes analisam, propõem e confrontam. A autoridade para criar requisito, fechar divergências ou aceitar riscos continua sendo humana, com responsabilidade nominal registrada."
+  },
+  {
+    "type": "mc",
+    "q": "No exemplo resolvido do material (réplica dedicada para leitura do catálogo durante o batch noturno), qual é o ponto de sensibilidade identificado?",
+    "options": [
+      "O horário exato em que o job batch é disparado",
+      "O atraso de replicação, que determina o quão \"novos\" são os dados considerados no treino",
+      "O número de servidores físicos disponíveis na nuvem",
+      "A linguagem de programação usada no pipeline"
+    ],
+    "correct": 1,
+    "explanation": "O atraso de replicação afeta fortemente um atributo (frescor dos dados de treino) — por isso é classificado como ponto de sensibilidade, distinto do trade-off (disponibilidade vs. custo/consistência)."
+  },
+  {
+    "type": "mc",
+    "q": "Qual das opções abaixo NÃO entra no Nível 2 (Contêineres) do C4, segundo a tabela do material?",
+    "options": [
+      "Aplicações",
+      "APIs, jobs, bancos, storage",
+      "Classes e nomes de arquivo",
+      "Onde os dados persistem"
+    ],
+    "correct": 2,
+    "explanation": "Classes e nomes de arquivo pertencem ao Nível 3 (Componentes) ou 4 (Código) — no Nível 2, o zoom é em aplicações e onde elas executam e persistem dados, sem detalhe de implementação interna."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Um colega propõe: \"vamos escrever a arquitetura como fatos direto, sem marcar suposições — assim o documento fica mais confiante e profissional\". Argumente contra essa proposta usando os conceitos de Fato, Lacuna, Suposição e Decisão.",
+    "expected": "A resposta deve argumentar que tratar suposições como fatos é justamente o risco que o framework existe para evitar: quando a IA (ou uma pessoa apressada) preenche uma lacuna com texto convincente e ninguém mais questiona aquele número ou afirmação, ele se torna \"fato por repetição\". Isso é perigoso porque decisões subsequentes (como a réplica dedicada ou o tamanho de um cache) passam a depender de uma base que nunca foi validada. Marcar corretamente (suposição, com origem e validação pendente) não torna o documento menos profissional — torna-o auditável e honesto, permitindo que qualquer pessoa nova conteste a origem de cada decisão, que é justamente a Definition of Done citada no material."
+  },
+  {
+    "type": "dissertativa",
+    "q": "Escreva um cenário de atributo de qualidade em seis partes para a situação: \"o job noturno falha depois de treinar o candidato, mas antes de promovê-lo\".",
+    "expected": "Fonte: o job de treinamento diário. Estímulo: falha após treinar o candidato, antes da promoção. Ambiente: execução noturna regular, com o serviço online em operação. Artefato: pipeline batch, checkpoint e model registry. Resposta: o sistema preserva o modelo ativo, não avança o checkpoint e retoma a execução seguinte sem duplicar dados. Métrica: retomada em até 1 execução subsequente, zero registros duplicados e modelo ativo inalterado — critérios verificáveis, não apenas a intenção de \"ser resiliente\"."
+  }
+]
