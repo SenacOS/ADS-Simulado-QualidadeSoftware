@@ -108,6 +108,8 @@ O conteúdo teórico foi construído a partir das aulas da disciplina de Qualida
 
 ## 📄 Licença
 
-Material educacional de uso interno da disciplina — sem licença de código aberto declarada.
+Este repositório é distribuído sob a licença MIT (veja [LICENSE](LICENSE)).
 
-Projeto desenvolvido como ferramenta de revisão para a disciplina de Qualidade de Software — ADS Senac.
+---
+
+Projeto desenvolvido como ferramenta de revisão para a disciplina de Qualidade de Software — ADS Senac, 2026.
