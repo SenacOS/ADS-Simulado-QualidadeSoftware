@@ -2,8 +2,6 @@
 
 Site interativo desenvolvido como material de estudo para a disciplina de Qualidade de Software, do curso de Análise e Desenvolvimento de Sistemas (ADS) — Senac.
 
-Repositório `ADS-Simulado-QualidadeSoftware`, parte do programa `ADS-Simulado-Materia` da organização [SenacOS](https://github.com/SenacOS) no GitHub.
-
 ## 📋 Sobre o Projeto
 
 O site reúne, em uma única página, teoria completa de 7 conteúdos e um questionário próprio para cada um deles — ao todo, 142 questões, majoritariamente de múltipla escolha, com 2 dissertativas por conteúdo. O conteúdo das aulas foi **reorganizado por assunto**, e não pela ordem cronológica das aulas. A interface possui tema claro e escuro e navegação por menu com âncoras.
