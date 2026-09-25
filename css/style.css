@@ -123,10 +123,14 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 14px);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
   background:
     linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 100% 34px,
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 34px 100%,
@@ -229,6 +233,39 @@ code:not(pre code) {
   color: #fff;
   font-size: 0.72rem;
   font-weight: 700;
+}
+
+.brand {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+/* Só o texto do título encolhe/trunca; o selo "QS" e o sufixo "/ ADS"
+   mantêm seu tamanho natural (o sufixo já some abaixo de 520px). */
+.brand-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header-actions {
+  flex-shrink: 0;
+}
+
+/* telas pequenas: botão só com o ícone e sem o sufixo da marca */
+.nav-toggle-label,
+.brand .brand-sub {
+  display: none;
+}
+
+@media (min-width: 520px) {
+  .nav-toggle-label {
+    display: inline;
+  }
+  .brand .brand-sub {
+    display: inline;
+  }
 }
 
 .brand .brand-sub {
